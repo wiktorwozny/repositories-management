@@ -39,12 +39,14 @@ const TitleWrapper = styled.div`
 const WorkspaceName = styled.h1`
   font-size: 2rem;
   margin: 0;
+  word-break: break-all;
 `;
 
 const WorkspaceCourse = styled.h2`
   font-size: 1.5rem;
   margin: 0;
   color: #666;
+  word-break: break-all;
 `;
 
 const ManagementWrapper = styled.div`
@@ -67,6 +69,7 @@ const Repository = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   width: 96%;
   //padding: 1rem;
   border: 1px solid #ddd;
@@ -80,6 +83,7 @@ const RepositoryName = styled.h2`
   font-size: 1.5rem;
   margin: 0;
   color: #3b3b3b;
+  word-break: break-all;
 `;
 
 function Workspace(props) {
