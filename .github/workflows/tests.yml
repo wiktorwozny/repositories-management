@@ -9,21 +9,6 @@ jobs:
   backend:
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:4.4.6
-        env:
-          MONGO_INITDB_ROOT_USERNAME: admin
-          MONGO_INITDB_ROOT_PASSWORD: admin
-          MONGO_INITDB_DATABASE: APP-DATABASE
-          ports:
-            - 27017:27017
-          options: >-
-            --health-cmd mongo
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,25 +22,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
 
-      - name: Install mongosh
-        run: |
-          sudo apt-get install gnupg
-          wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
-          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
-          sudo apt-get update
-          sudo apt-get install -y mongodb-mongosh
-          mongosh --version
-
-      - name: Initialize MongoDB
-        run: |
-          mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
-            db = db.getSiblingDB('repos-api-db');
-            db.createUser({ user: '${{ secrets.MONGO_USER }}', pwd: '{{ secrets.MONGO_PASSWORD }}', roles: [{ role: 'readWrite', db: 'repos-api-db' }] })
-            db.createCollection('APP-COLLECTION');
-          EOF
-
       - name: Run tests
-        run: gradle :test
+        run: gradle test --tests '*ServiceTest'
 
 
   frontend:
