@@ -27,7 +27,7 @@ jobs:
         with:
           mongodb-version: '6.0'
           mongodb-username: ${{ secrets.MONGO_USER }}
-          mongodb_password: ${{ secrets.MONGO_PASSWORD }}
+          mongodb-password: ${{ secrets.MONGO_PASSWORD }}
           mongodb-db: repos-api-db
 
       - name: Run tests
@@ -48,8 +48,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: front/repositories-management
+        working-directory: ./front/repositories-management
 
       - name: Run tests
         run: npm run test
-        working-directory: front/repositories-management
+        working-directory: ./front/repositories-management
