@@ -37,7 +37,7 @@ class WorkspaceControllerTest {
 
     @Test
     void testGetWorkspaceById() throws Exception {
-        Workspace workspace = new Workspace("Nazwa nowego workspace");
+        Workspace workspace = new Workspace("New Workspace");
         workspace = workspaceService.saveWorkspace(workspace);
         ObjectId workspaceId = workspace.getId();
 
@@ -48,7 +48,7 @@ class WorkspaceControllerTest {
 
     @Test
     void testDeleteWorkspace() throws Exception {
-        Workspace workspace = new Workspace("Nazwa nowego workspace");
+        Workspace workspace = new Workspace("New Workspace");
         workspace = workspaceService.saveWorkspace(workspace);
         ObjectId workspaceId = workspace.getId();
 
