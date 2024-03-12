@@ -48,9 +48,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         if (optionalWorkspace.isPresent()) {
             workspaceRepository.delete(optionalWorkspace.get());
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -61,8 +60,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             existingWorkspace.setName(updatedWorkspace.getName());
             existingWorkspace.setRepositories(updatedWorkspace.getRepositories());
             return workspaceRepository.save(existingWorkspace);
-        } else {
-            return null;
         }
+        return null;
     }
 }
