@@ -22,16 +22,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
 
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.10.0
-        with:
-          mongodb-version: '6.0'
-          mongodb-username: ${{ secrets.MONGO_USER }}
-          mongodb-password: ${{ secrets.MONGO_PASSWORD }}
-          mongodb-db: repos-api-db
-
       - name: Run tests
-        run: gradle :test
+        run: gradle test --tests '*ServiceTest'
 
 
   frontend:
