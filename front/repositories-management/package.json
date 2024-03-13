@@ -2,6 +2,7 @@
   "name": "repositories-management",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -43,5 +44,10 @@
   },
   "devDependencies": {
     "prettier": "3.2.5"
+  },
+  "jest": {
+
+      "moduleNameMapper": { "^axios$": "axios/dist/node/axios.cjs" }
+
   }
 }
