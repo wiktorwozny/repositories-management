@@ -10,6 +10,7 @@ import pl.edu.agh.repomanagement.backend.services.WorkspaceService;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequestMapping("/api/workspaces")
 public class WorkspaceController {
@@ -45,7 +46,7 @@ public class WorkspaceController {
 
     @PostMapping
     public ResponseEntity<Workspace> createWorkspace(@RequestBody String workspaceName) {
-        Workspace workspace = new Workspace(workspaceName, new ArrayList<>());
+        Workspace workspace = new Workspace(workspaceName.replaceAll("\"", ""), new ArrayList<>());
         Workspace createdWorkspace = workspaceService.saveWorkspace(workspace);
         return new ResponseEntity<>(createdWorkspace, HttpStatus.CREATED);
     }

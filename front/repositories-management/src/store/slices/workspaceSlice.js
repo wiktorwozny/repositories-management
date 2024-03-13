@@ -11,47 +11,36 @@ const workspaceAdapter = createEntityAdapter();
 export const fetchWorkspaceList = createAsyncThunk(
   "workspace/fetchWorkspaceList",
   async () => {
-    // const response = await client.get("workspace");
-    // return response.data;
-    return [
-      {
-        id: 1,
-        name: "Workspace 1",
-        repositories: [
-          {
-            id: 1,
-            name: "Repository 1",
-            url: "https://github.com/VAST-AI-Research/TripoSR",
-          },
-        ],
-      },
-    ];
+    const response = await client.get("/api/workspaces");
+    return response.data;
   },
 );
 
 export const addWorkspace = createAsyncThunk(
   "workspace/addWorkspace",
   async (workspace) => {
-    // const response = await client.post("workspace", workspace);
-    // return response.data;
-    console.log("slice", workspace);
-    return workspace;
+    console.log("workspace", workspace);
+    const response = await client.post("/api/workspaces", workspace.name);
+    console.log("response", response.data);
+    return response.data;
   },
 );
 
 export const editWorkspace = createAsyncThunk(
   "workspace/editWorkspace",
   async (workspace) => {
-    // const response = await client.put("workspace", workspace);
-    // return response.data;
-    return workspace;
+    const endpoint = "/api/workspaces/" + workspace.id;
+    const response = await client.put(endpoint, {
+      ...workspace,
+    });
+    return response.data;
   },
 );
 export const deleteWorkspace = createAsyncThunk(
   "workspace/deleteWorkspace",
   async (workspace) => {
-    // const response = await client.delete("workspace", workspace);
-    // return response.data;
+    const endpoint = "/api/workspaces/" + workspace.id;
+    await client.delete(endpoint);
     return workspace;
   },
 );

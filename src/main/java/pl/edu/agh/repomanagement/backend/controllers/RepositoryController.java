@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/workspaces/{wid}/repositories")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RepositoryController {
 
     private final RepositoryService repositoryService;

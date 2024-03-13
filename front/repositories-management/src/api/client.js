@@ -1,7 +1,10 @@
 /// create and export axios client
 import axios from "axios";
 
-///TODO: change the baseURL to the actual backend URL
 export default axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:8080",
+  headers: {
+    "Content-type": "application/json",
+    "Access-Control-Allow-Credentials": true,
+  },
 });

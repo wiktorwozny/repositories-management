@@ -5,7 +5,6 @@ import {
   addWorkspace,
   deleteWorkspace,
   editWorkspace,
-  fetchWorkspaceList,
 } from "../../store/slices/workspaceSlice";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -33,6 +32,7 @@ function AddWorkspace(props) {
   };
 
   const handleSubmit = async (formData) => {
+    console.log("formData", formData);
     if (props.editMode) {
       await dispatch(
         editWorkspace({
@@ -46,17 +46,7 @@ function AddWorkspace(props) {
       await dispatch(
         addWorkspace({
           id: uuidv4(),
-          name: formData.workspaceName,
-          repositories: [
-            {
-              id: uuidv4(),
-              name: "Repository 1",
-            },
-            {
-              id: uuidv4(),
-              name: "Repository 2",
-            },
-          ],
+          name: formData.workspaceName.replace(/['"]+/g, ""),
           courseName: formData.courseName,
         }),
       );
@@ -92,8 +82,6 @@ function AddWorkspace(props) {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
-
-            // TODO: update with actual object
             await handleSubmit(formJson);
           },
         }}
