@@ -35,9 +35,10 @@ class RepositoryRepositoryTest {
 
         // Then
         List<Repository> repositories = repositoryRepository.findAll();
-        assertThat(repositories).isNotNull();
-        assertThat(repositories).hasSize(2);
-        assertThat(repositories).contains(repository1, repository2);
+        assertThat(repositories)
+                .isNotNull()
+                .hasSize(2)
+                .contains(repository1, repository2);
     }
 
     @Test
