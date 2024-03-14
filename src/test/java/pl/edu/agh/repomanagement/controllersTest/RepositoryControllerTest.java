@@ -54,7 +54,7 @@ class RepositoryControllerTest {
         ObjectId workspaceId = workspace.getId();
 
         Repository repository = new Repository("rtest", "utest");
-        repositoryService.saveRepository(repository);
+        repositoryService.saveRepository(repository, workspaceId.toString());
         ObjectId repositoryId = repository.getId();
 
         mockMvc.perform(get("/api/workspaces/{wid}/repositories/{rid}",
@@ -72,7 +72,7 @@ class RepositoryControllerTest {
         ObjectId workspaceId = workspace.getId();
 
         Repository repository = new Repository("rtest", "utest");
-        repositoryService.saveRepository(repository);
+        repositoryService.saveRepository(repository, workspaceId.toString());
         ObjectId repositoryId = repository.getId();
 
         mockMvc.perform(delete("/api/workspaces/{wid}/repositories/{rid}",
@@ -88,7 +88,7 @@ class RepositoryControllerTest {
         workspace = workspaceService.saveWorkspace(workspace);
         ObjectId workspaceId = workspace.getId();
 
-        RepositoryController.CreateRepositoryDto dto = new RepositoryController.CreateRepositoryDto("rtest", "utest");
+        RepositoryController.CreateRepositoryDto dto = new RepositoryController.CreateRepositoryDto("rtest", "utest", "wtest");
 
         mockMvc.perform(post("/api/workspaces/{wid}/repositories",
                             workspaceId.toHexString())
@@ -104,9 +104,10 @@ class RepositoryControllerTest {
         Workspace workspace = new Workspace("test");
         workspace = workspaceService.saveWorkspace(workspace);
         ObjectId workspaceId = workspace.getId();
+        System.out.println(workspaceId.toString());
 
         Repository repository = new Repository("rtest", "utest");
-        repository = repositoryService.saveRepository(repository);
+        repository = repositoryService.saveRepository(repository, workspaceId.toString());
         ObjectId repositoryId = repository.getId();
 
         Repository newrepo = new Repository("new rtest", "new utest");

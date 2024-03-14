@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import pl.edu.agh.repomanagement.backend.ObjectIdJsonSerializer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class Workspace {
     private ObjectId id;
     private String name;
     @DBRef
-    private List<Repository> repositories;
+    private List<Repository> repositories = new ArrayList<>();
 
     public Workspace() {
     }

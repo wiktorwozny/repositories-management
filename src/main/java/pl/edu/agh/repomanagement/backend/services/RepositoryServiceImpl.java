@@ -19,8 +19,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 
 
     @Autowired
-    public RepositoryServiceImpl(RepositoryRepository repositoryRepository) {
+    public RepositoryServiceImpl(RepositoryRepository repositoryRepository, WorkspaceService workspaceService) {
         this.repositoryRepository = repositoryRepository;
+        this.workspaceService = workspaceService;
     }
 
     @Override
