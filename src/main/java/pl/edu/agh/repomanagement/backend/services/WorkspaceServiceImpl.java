@@ -3,9 +3,11 @@ package pl.edu.agh.repomanagement.backend.services;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.repomanagement.backend.models.Repository;
 import pl.edu.agh.repomanagement.backend.models.Workspace;
 import pl.edu.agh.repomanagement.backend.repositories.WorkspaceRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,4 +65,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         return null;
     }
+
+    @Override
+    public Workspace addRepositoryToWorkspace(String workspaceId, Repository repository) {
+        Workspace workspace = getWorkspaceById(workspaceId);
+        if (workspace != null) {
+            List<Repository> repositories = workspace.getRepositories();
+            if (repositories == null) {
+                repositories = new ArrayList<>();
+            }
+            repositories.add(repository);
+            workspace.setRepositories(repositories);
+            return workspaceRepository.save(workspace);
+        }
+        return null;
+    }
+
 }

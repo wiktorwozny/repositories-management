@@ -27,9 +27,10 @@ class RepositoryServiceTest {
     void testSaveRepository()
     {
         Repository repo = new Repository("Test name", "Test url");
+        ObjectId wid = new ObjectId();
         when(repositoryRepository.save(repo)).thenReturn(repo);
 
-        Repository savedrepo = repositoryService.saveRepository(repo);
+        Repository savedrepo = repositoryService.saveRepository(repo, wid.toHexString());
 
         assertNotNull(savedrepo);
         assertEquals(savedrepo.getName(), repo.getName());

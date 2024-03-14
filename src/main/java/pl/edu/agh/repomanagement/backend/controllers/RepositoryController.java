@@ -77,19 +77,18 @@ public class RepositoryController {
     @DeleteMapping("/{rid}")
     public ResponseEntity<Void> deleteRepository(@PathVariable("wid") String wid,
                                                  @PathVariable("rid") String rid) {
-        // get workspace
         Workspace workspace = workspaceService.getWorkspaceById(wid);
-        if(workspace == null) {
+        if (workspace == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if(!repositoryService.deleteRepositoryById(rid)){
+        if (!repositoryService.deleteRepositoryById(rid)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if(workspace.getRepositories() != null &&
-                !workspace.getRepositories().removeIf(repository -> repository.getId().equals(rid))) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<Repository> repositories = workspace.getRepositories();
+        if (repositories != null) {
+            repositories.removeIf(repository -> repository.getId().equals(rid));
         }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -106,7 +105,7 @@ public class RepositoryController {
         }
 
         Repository repository = new Repository(dto.getName(), dto.getUrl());
-        Repository newRepository = repositoryService.saveRepository(repository);
+        Repository newRepository = repositoryService.saveRepository(repository, wid);
         if(workspace.getRepositories() == null) {
             workspace.setRepositories(new ArrayList<>());
         }
