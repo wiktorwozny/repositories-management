@@ -24,6 +24,8 @@ public class RepositoryController {
         private String name;
         private String url;
 
+        private String workspaceId;
+
         public String getName() {
             return name;
         }
@@ -40,9 +42,18 @@ public class RepositoryController {
             this.url = url;
         }
 
-        public CreateRepositoryDto(String name, String url) {
+        public String getWorkspaceId() {
+            return workspaceId;
+        }
+
+        public void setWorkspaceId(String workspaceId) {
+            this.workspaceId = workspaceId;
+        }
+
+        public CreateRepositoryDto(String name, String url, String workspaceId) {
             this.name = name;
             this.url = url;
+            this.workspaceId = workspaceId;
         }
     }
 
@@ -106,7 +117,7 @@ public class RepositoryController {
         }
 
         Repository repository = new Repository(dto.getName(), dto.getUrl());
-        Repository newRepository = repositoryService.saveRepository(repository);
+        Repository newRepository = repositoryService.saveRepository(repository, dto.getWorkspaceId());
         if(workspace.getRepositories() == null) {
             workspace.setRepositories(new ArrayList<>());
         }

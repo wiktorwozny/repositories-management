@@ -3,6 +3,7 @@ package pl.edu.agh.repomanagement.backend.services;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.repomanagement.backend.models.Repository;
 import pl.edu.agh.repomanagement.backend.models.Workspace;
 import pl.edu.agh.repomanagement.backend.repositories.WorkspaceRepository;
 
@@ -63,4 +64,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         return null;
     }
+
+    @Override
+    public Workspace addRepositoryToWorkspace(String id, Repository repository){
+        Optional<Workspace> optionalWorkspace = workspaceRepository.findById(new ObjectId(id));
+        if(optionalWorkspace.isPresent()){
+            Workspace existingWorkspace = optionalWorkspace.get();
+            existingWorkspace.addRepository(repository);
+            return workspaceRepository.save(existingWorkspace);
+        }
+        return null;
+    }
+
+
 }

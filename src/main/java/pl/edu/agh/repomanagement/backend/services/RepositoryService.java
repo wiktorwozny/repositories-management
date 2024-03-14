@@ -4,7 +4,7 @@ import pl.edu.agh.repomanagement.backend.models.Repository;
 import java.util.List;
 
 public interface RepositoryService {
-    Repository saveRepository(Repository repository);
+    Repository saveRepository(Repository repository, String workspaceId);
 
     Repository getRepositoryById(String id);
 

@@ -55,6 +55,10 @@ public class Workspace {
         this.repositories = repositories;
     }
 
+    public void addRepository(Repository repository){
+        this.repositories.add(repository);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

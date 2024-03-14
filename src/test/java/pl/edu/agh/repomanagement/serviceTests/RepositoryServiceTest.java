@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.edu.agh.repomanagement.backend.models.Repository;
+import pl.edu.agh.repomanagement.backend.models.Workspace;
 import pl.edu.agh.repomanagement.backend.repositories.RepositoryRepository;
+import pl.edu.agh.repomanagement.backend.repositories.WorkspaceRepository;
 import pl.edu.agh.repomanagement.backend.services.RepositoryService;
+import pl.edu.agh.repomanagement.backend.services.WorkspaceService;
+
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,13 +27,22 @@ class RepositoryServiceTest {
     @MockBean
     private RepositoryRepository repositoryRepository;
 
+    @MockBean
+    private WorkspaceRepository workspaceRepository;
+
     @Test
     void testSaveRepository()
     {
+        Workspace workspace = new Workspace("Repo name");
+        when(workspaceRepository.save(workspace)).thenReturn(workspace);
+
+        Workspace savedworkspace = workspaceRepository.save(workspace);
+
+        ObjectId workspaceId = savedworkspace.getId();
         Repository repo = new Repository("Test name", "Test url");
         when(repositoryRepository.save(repo)).thenReturn(repo);
 
-        Repository savedrepo = repositoryService.saveRepository(repo);
+        Repository savedrepo = repositoryService.saveRepository(repo, workspaceId.toString());
 
         assertNotNull(savedrepo);
         assertEquals(savedrepo.getName(), repo.getName());
