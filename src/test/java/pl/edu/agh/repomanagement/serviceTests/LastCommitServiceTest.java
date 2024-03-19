@@ -15,12 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class LastCommitServiceTest {
 
-    private  LastCommitService lastCommitService;
-
+    private LastCommitService lastCommitService;
 
     @Test
-    void testGetLastCommit()
-    {
+    void testGetLastCommit() {
         lastCommitService = new LastCommitServiceImpl();
         Repository repo = new Repository("Test repo", "https://github.com/wiktorwozny/repositories-management");
 
@@ -29,9 +27,5 @@ class LastCommitServiceTest {
         assertFalse(lastCommit.commitName().isEmpty());
         assertTrue(lastCommit.date().before(new Date()));
         assertTrue(lastCommit.url().startsWith("https://github.com/wiktorwozny/repositories-management/commit"));
-
-
     }
-
-
 }

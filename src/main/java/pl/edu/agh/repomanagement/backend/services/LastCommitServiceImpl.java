@@ -3,7 +3,6 @@ package pl.edu.agh.repomanagement.backend.services;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
-import org.kohsuke.github.PagedIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,11 +11,11 @@ import pl.edu.agh.repomanagement.backend.records.LastCommit;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 
 @Service
 public class LastCommitServiceImpl implements LastCommitService {
-
 
     private static final Logger logger = LoggerFactory.getLogger(LastCommitServiceImpl.class);
 
@@ -41,9 +40,13 @@ public class LastCommitServiceImpl implements LastCommitService {
 
             org.kohsuke.github.GHRepository gitRepository = github.getRepository(userName + "/" + repoName);
 
-            PagedIterable<GHCommit> listCommits = gitRepository.listCommits();
+            List<GHCommit> listCommits = gitRepository.listCommits().toList();
 
-            GHCommit ghCommit = listCommits.toList().get(0);
+            if (listCommits.isEmpty()) {
+                return null;
+            }
+
+            GHCommit ghCommit = listCommits.get(0);
 
             String name = ghCommit.getAuthor().getName();
             Date date = ghCommit.getCommitDate();
@@ -56,7 +59,6 @@ public class LastCommitServiceImpl implements LastCommitService {
         } catch (IOException e) {
             logger.error("Error occurred while fetching last commit", e);
         }
-
         return lastCommit;
     }
 }
