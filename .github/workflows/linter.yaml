@@ -33,6 +33,4 @@ jobs:
           VALIDATE_MARKDOWN_MARKDOWNLINT: false
           VALIDATE_NATURAL_LANGUAGE_TEXTLINT: false
           VALIDATE_GROOVY_NPM-GROOVY-LINT: false
-          
           JAVA_FILE_NAME: java_linter_rules.xml
-          
