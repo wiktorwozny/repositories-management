@@ -31,4 +31,5 @@ jobs:
           VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_CSS: true
           VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
           
