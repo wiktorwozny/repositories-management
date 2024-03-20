@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import pl.edu.agh.repomanagement.backend.models.Repository;
 import pl.edu.agh.repomanagement.backend.models.Workspace;
 import pl.edu.agh.repomanagement.backend.repositories.WorkspaceRepository;
 import pl.edu.agh.repomanagement.backend.services.WorkspaceService;
@@ -130,6 +131,30 @@ class WorkspaceServiceTest {
         assertEquals(existingWorkspace.getId(), result.getId());
         verify(workspaceRepository, times(1)).findById(workspaceId);
         verify(workspaceRepository, times(1)).save(existingWorkspace);
+    }
+
+    @Test
+    void testAddRepositoryToWorkspace() {
+        // Given
+        ObjectId workspaceId = new ObjectId();
+        Workspace workspace = new Workspace();
+        workspace.setId(workspaceId);
+        List<Repository> repositories = new ArrayList<>();
+        workspace.setRepositories(repositories);
+        Repository repository = new Repository();
+        repositories.add(repository);
+
+        // When
+        when(workspaceRepository.findById(workspaceId)).thenReturn(Optional.of(workspace));
+        when(workspaceRepository.save(workspace)).thenReturn(workspace);
+
+        Workspace updatedWorkspace = workspaceService.addRepositoryToWorkspace(workspaceId.toHexString(), repository);
+
+        // Then
+        assertNotNull(updatedWorkspace);
+        assertEquals(repositories.size(), updatedWorkspace.getRepositories().size());
+        verify(workspaceRepository, times(1)).findById(workspaceId);
+        verify(workspaceRepository, times(1)).save(workspace);
     }
 
 }

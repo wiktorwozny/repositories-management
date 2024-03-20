@@ -5,7 +5,11 @@ import {
   addWorkspace,
   deleteWorkspace,
   editWorkspace,
+  addRepository,
+  deleteRepository,
+  editRepository,
 } from "../../store/slices/workspaceSlice";
+import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
 import {
   Button,
@@ -35,19 +39,20 @@ function AddWorkspace(props) {
     console.log("formData", formData);
     if (props.editMode) {
       await dispatch(
-        editWorkspace({
-          id: props.workspace.id,
-          name: formData.workspaceName,
-          courseName: formData.courseName,
+        editRepository({
+          id: props.repository.id,
+          workspaceId: props.workspace.id,
+          name: formData.name,
+          url: formData.url,
         }),
       );
       handleClose();
     } else {
       await dispatch(
-        addWorkspace({
-          id: uuidv4(),
-          name: formData.workspaceName.replace(/['"]+/g, ""),
-          courseName: formData.courseName,
+        addRepository({
+          workspaceId: props.workspace.id,
+          name: formData.name,
+          url: formData.url,
         }),
       );
       handleClose();
@@ -55,7 +60,12 @@ function AddWorkspace(props) {
   };
 
   const handleDelete = async () => {
-    await dispatch(deleteWorkspace(props.workspace));
+    await dispatch(
+      deleteRepository({
+        workspaceId: props.workspace.id,
+        id: props.repository.id,
+      }),
+    );
     handleClose();
   };
 
@@ -66,9 +76,9 @@ function AddWorkspace(props) {
           <EditIcon />
         </IconButton>
       ) : (
-        <Button variant="outlined" onClick={handleOpen}>
-          Add workspace
-        </Button>
+        <IconButton onClick={handleOpen}>
+          <AddIcon onClick={handleOpen} />
+        </IconButton>
       )}
 
       <Dialog
@@ -87,35 +97,35 @@ function AddWorkspace(props) {
         }}
       >
         <DialogTitle>
-          {props.editMode ? "Edit workspace" : "Add workspace"}
+          {props.editMode ? "Edit repository" : "Add repository"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {props.editMode
-              ? "Edit the workspace details"
-              : "Enter the workspace details"}
+              ? "Edit the repository details"
+              : "Enter the repository details"}
           </DialogContentText>
           <TextField
             autoFocus
             required
             margin="dense"
-            id="workspaceName"
-            name="workspaceName"
-            label="Workspace Name"
+            id="name"
+            name="name"
+            label="Name"
             type="text"
             fullWidth
             variant="standard"
-            defaultValue={props.workspace?.name}
+            defaultValue={props.repository?.name}
           />
           <TextField
             margin="dense"
-            id="courseName"
-            name="courseName"
-            label="Course Name"
+            id="url"
+            name="url"
+            label="URL"
             type="text"
             fullWidth
             variant="standard"
-            defaultValue={props.workspace?.courseName}
+            defaultValue={props.repository?.url}
           />
         </DialogContent>
         <DialogActions>

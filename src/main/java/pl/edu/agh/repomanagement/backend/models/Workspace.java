@@ -1,9 +1,11 @@
 package pl.edu.agh.repomanagement.backend.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import pl.edu.agh.repomanagement.backend.ObjectIdJsonSerializer;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +13,7 @@ import java.util.Objects;
 @Document(collection = "workspaces")
 public class Workspace {
     @Id
+    @JsonSerialize(using = ObjectIdJsonSerializer.class)
     private ObjectId id;
     private String name;
     @DBRef

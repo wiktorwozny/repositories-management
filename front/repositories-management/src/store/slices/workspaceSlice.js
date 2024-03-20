@@ -11,48 +11,72 @@ const workspaceAdapter = createEntityAdapter();
 export const fetchWorkspaceList = createAsyncThunk(
   "workspace/fetchWorkspaceList",
   async () => {
-    // const response = await client.get("workspace");
-    // return response.data;
-    return [
-      {
-        id: 1,
-        name: "Workspace 1",
-        repositories: [
-          {
-            id: 1,
-            name: "Repository 1",
-            url: "https://github.com/VAST-AI-Research/TripoSR",
-          },
-        ],
-      },
-    ];
+    const response = await client.get("/api/workspaces");
+    return response.data;
   },
 );
 
 export const addWorkspace = createAsyncThunk(
   "workspace/addWorkspace",
   async (workspace) => {
-    // const response = await client.post("workspace", workspace);
-    // return response.data;
-    console.log("slice", workspace);
-    return workspace;
+    console.log("workspace", workspace);
+    const response = await client.post("/api/workspaces", workspace.name);
+    console.log("response", response.data);
+    return response.data;
   },
 );
 
 export const editWorkspace = createAsyncThunk(
   "workspace/editWorkspace",
   async (workspace) => {
-    // const response = await client.put("workspace", workspace);
-    // return response.data;
-    return workspace;
+    const endpoint = "/api/workspaces/" + workspace.id;
+    const response = await client.put(endpoint, {
+      ...workspace,
+    });
+    return response.data;
   },
 );
 export const deleteWorkspace = createAsyncThunk(
   "workspace/deleteWorkspace",
   async (workspace) => {
-    // const response = await client.delete("workspace", workspace);
-    // return response.data;
+    const endpoint = "/api/workspaces/" + workspace.id;
+    await client.delete(endpoint);
     return workspace;
+  },
+);
+
+export const addRepository = createAsyncThunk(
+  "workspace/addRepository",
+  async (repository) => {
+    const response = await client.post(
+      `/api/workspaces/${repository.workspaceId}/repositories`,
+      repository,
+    );
+    return { workspaceId: repository.workspaceId, ...response.data };
+  },
+);
+
+export const deleteRepository = createAsyncThunk(
+  "workspace/deleteRepository",
+  async (repository) => {
+    const endpoint = `/api/workspaces/${repository.workspaceId}/repositories/${repository.id}`;
+    await client.delete(endpoint);
+    return {
+      workspaceId: repository.workspaceId,
+      id: repository.id,
+    };
+  },
+);
+
+export const editRepository = createAsyncThunk(
+  "workspace/editRepository",
+  async (repository) => {
+    console.log("repository", repository);
+    const endpoint = `/api/workspaces/${repository.workspaceId}/repositories/${repository.id}`;
+    const response = await client.put(endpoint, {
+      ...repository,
+    });
+    return { workspaceId: repository.workspaceId, ...response.data };
   },
 );
 
@@ -77,6 +101,34 @@ const workspaceSlice = createSlice({
       state.workspaceList = state.workspaceList.filter(
         (workspace) => workspace.id !== action.payload.id,
       );
+    });
+    builder.addCase(addRepository.fulfilled, (state, action) => {
+      const index = state.workspaceList.findIndex(
+        (workspace) => workspace.id === action.payload.workspaceId,
+      );
+      if (!state.workspaceList[index].repositories)
+        state.workspaceList[index].repositories = [];
+
+      state.workspaceList[index].repositories.push(action.payload);
+    });
+    builder.addCase(deleteRepository.fulfilled, (state, action) => {
+      const index = state.workspaceList.findIndex(
+        (workspace) => workspace.id === action.payload.workspaceId,
+      );
+      state.workspaceList[index].repositories = state.workspaceList[
+        index
+      ].repositories.filter(
+        (repository) => repository.id !== action.payload.id,
+      );
+    });
+    builder.addCase(editRepository.fulfilled, (state, action) => {
+      const index = state.workspaceList.findIndex(
+        (workspace) => workspace.id === action.payload.workspaceId,
+      );
+      const repositoryIndex = state.workspaceList[index].repositories.findIndex(
+        (repository) => repository.id === action.payload.id,
+      );
+      state.workspaceList[index].repositories[repositoryIndex] = action.payload;
     });
   },
 });

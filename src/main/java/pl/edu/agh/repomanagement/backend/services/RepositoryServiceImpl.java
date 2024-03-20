@@ -11,15 +11,19 @@ import java.util.Optional;
 public class RepositoryServiceImpl implements RepositoryService {
 
     private final RepositoryRepository repositoryRepository;
+    private final WorkspaceService workspaceService;
 
     @Autowired
-    public RepositoryServiceImpl(RepositoryRepository repositoryRepository) {
+    public RepositoryServiceImpl(RepositoryRepository repositoryRepository, WorkspaceService workspaceService) {
         this.repositoryRepository = repositoryRepository;
+        this.workspaceService = workspaceService;
     }
 
     @Override
-    public Repository saveRepository(Repository repository) {
-        return repositoryRepository.save(repository);
+    public Repository saveRepository(Repository repository, String workspaceId) {
+        repository = repositoryRepository.save(repository);
+        workspaceService.addRepositoryToWorkspace(workspaceId, repository);
+        return repository;
     }
 
     @Override
