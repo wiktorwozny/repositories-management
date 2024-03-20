@@ -120,8 +120,9 @@ function Workspace(props) {
                 <RepositoryName>{repository.name}</RepositoryName>
                 {" - "}
                 <RepositoryName>
-                  <a href={repository.lastCommit.url}>
-                    {new Date(repository.lastCommit.date).toLocaleString()}
+                  <a href={repository.lastCommit?.url}>
+                    {repository.lastCommit?.date &&
+                      new Date(repository.lastCommit.date).toLocaleString()}
                   </a>
                 </RepositoryName>
               </RepositoryInfo>
