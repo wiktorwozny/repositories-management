@@ -27,4 +27,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: /.github/workflows
           VALIDATE_JAVA_CHECKSTYLE: true
+          VALIDATE_JAVASCRIPT_STANDARD: true
+          VALIDATE_CSS_STYLELINT: false
+          VALIDATE_JAVA_GOOGLE-JAVA-FORMAT: false
+          VALIDATE_MARKDOWN_MARKDOWNLINT: false
+          VALIDATE_NATURAL_LANGUAGE_TEXTLINT: false
+          VALIDATE_GROOVY_NPM-GROOVY-LINT: false
+          
           JAVA_FILE_NAME: java_linter_rules.xml
+          
