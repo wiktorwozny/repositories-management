@@ -100,6 +100,7 @@ public class RepositoryController {
                                                        @RequestBody CreateRepositoryDto dto) {
 
         // get workspace
+        System.out.println("WID: " + wid);
         Workspace workspace = workspaceService.getWorkspaceById(wid);
         if(workspace == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

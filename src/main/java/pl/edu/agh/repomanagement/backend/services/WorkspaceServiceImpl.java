@@ -37,6 +37,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Workspace getWorkspaceById(String id) {
+        System.out.println("ID: " + id);
         Optional<Workspace> optionalWorkspace = workspaceRepository.findById(new ObjectId(id));
         return optionalWorkspace.orElse(null);
     }

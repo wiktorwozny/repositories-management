@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AddWorkspace from "./AddWorkspace";
+import AddRepository from "./AddRepository";
 const WorkspaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -102,6 +103,7 @@ function Workspace(props) {
           <WorkspaceCourse>{workspace.courseName}</WorkspaceCourse>
         </TitleWrapper>
         <ManagementWrapper>
+          <AddRepository workspace={workspace} />
           <AddWorkspace editMode={true} workspace={workspace} />
 
           <IconButton onClick={handleExpand}>
@@ -117,9 +119,11 @@ function Workspace(props) {
               <RepositoryInfo>
                 <RepositoryName>{repository.name}</RepositoryName>
               </RepositoryInfo>
-              <IconButton>
-                <EditIcon />
-              </IconButton>
+              <AddRepository
+                editMode={true}
+                repository={repository}
+                workspace={props.workspace}
+              />
             </Repository>
           ))}
         </RepositoryList>
