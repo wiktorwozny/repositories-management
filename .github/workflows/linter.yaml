@@ -29,9 +29,6 @@ jobs:
           VALIDATE_JAVA: true
           JAVA_FILE_NAME: java_linter_rules.xml
           VALIDATE_JAVASCRIPT_STANDARD: true
-          VALIDATE_CSS_STYLELINT: false
-          VALIDATE_JAVA_GOOGLE-JAVA-FORMAT: false
-          VALIDATE_MARKDOWN_MARKDOWNLINT: false
-          VALIDATE_NATURAL_LANGUAGE_TEXTLINT: false
-          VALIDATE_GROOVY_NPM-GROOVY-LINT: false
+          VALIDATE_CSS: true
+          VALIDATE_ALL_CODEBASE: false
           
