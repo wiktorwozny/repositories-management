@@ -118,6 +118,12 @@ function Workspace(props) {
             <Repository key={repository.id}>
               <RepositoryInfo>
                 <RepositoryName>{repository.name}</RepositoryName>
+                {" - "}
+                <RepositoryName>
+                  <a href={repository.lastCommit.url}>
+                    {new Date(repository.lastCommit.date).toLocaleString()}
+                  </a>
+                </RepositoryName>
               </RepositoryInfo>
               <AddRepository
                 editMode={true}
