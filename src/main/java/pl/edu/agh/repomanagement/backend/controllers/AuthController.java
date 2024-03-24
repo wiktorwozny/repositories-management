@@ -16,7 +16,6 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.repomanagement.backend.models.User;
 import pl.edu.agh.repomanagement.backend.payload.request.AuthRequest;
-import pl.edu.agh.repomanagement.backend.payload.response.AuthResponse;
 import pl.edu.agh.repomanagement.backend.services.UserService;
 
 @RestController
@@ -45,11 +44,9 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> userSignup(@RequestBody AuthRequest request) {
+    public ResponseEntity<Void> userSignup(@RequestBody AuthRequest request) {
         if (userService.getUserByLogin(request.login()) != null) {
-            return new ResponseEntity<>(
-                new AuthResponse(false, "User with provided username already exists"),
-                HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         User user = new User(
@@ -57,12 +54,11 @@ public class AuthController {
             passwordEncoder.encode(request.password()));
         userService.saveUser(user);
 
-        return ResponseEntity.ok().body(
-            new AuthResponse(true, "User registered successfully"));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> userLogin(
+    public ResponseEntity<String> userLogin(
             @RequestBody AuthRequest request,
             @RequestParam("remember-me") Boolean rememberMe,
             HttpServletRequest req,
@@ -84,13 +80,9 @@ public class AuthController {
                 rememberMeServices.loginSuccess(req, res, authResponse);
             }
 
-            return new ResponseEntity<>(
-                new AuthResponse(true, "User logged in successfully"),
-                HttpStatus.OK);
+            return new ResponseEntity<>(request.login(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(
-                new AuthResponse(false, "Authentication failed"),
-                HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 }
