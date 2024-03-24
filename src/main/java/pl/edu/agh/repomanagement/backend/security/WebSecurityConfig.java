@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,7 +35,10 @@ public class WebSecurityConfig {
                 .key("sEDf4V2svx7LdIKqcJz6EZWjJRTlol39FhbonqRmQMiu18QXMUrzbAcfHZ2VFZCQ")
                 .tokenValiditySeconds(604800)) // 7 days
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-            .securityContext(context -> context.securityContextRepository(securityContextRepository()));
+            .securityContext(context -> context.securityContextRepository(securityContextRepository()))
+            .logout(logout -> logout
+                .logoutUrl("/api/auth/logout")
+                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(204)));
 
         return http.build();
     }

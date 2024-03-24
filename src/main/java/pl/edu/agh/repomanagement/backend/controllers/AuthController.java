@@ -85,4 +85,6 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+
+    // logout implemented in backend/security/WebSecurityConfig.java as Spring Docs suggest
 }
