@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.repomanagement.backend.models.User;
 import pl.edu.agh.repomanagement.backend.payload.request.AuthRequest;
+import pl.edu.agh.repomanagement.backend.payload.response.LoginResponse;
 import pl.edu.agh.repomanagement.backend.services.UserService;
 
 @RestController
@@ -24,7 +26,6 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
     private final SecurityContextRepository securityContextRepository;
     private final RememberMeServices rememberMeServices;
 
@@ -32,13 +33,11 @@ public class AuthController {
     public AuthController(
             UserService userService,
             AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder,
             SecurityContextRepository securityContextRepository,
             RememberMeServices rememberMeServices
     ) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
         this.securityContextRepository = securityContextRepository;
         this.rememberMeServices = rememberMeServices;
     }
@@ -51,26 +50,27 @@ public class AuthController {
 
         User user = new User(
             request.login(),
-            passwordEncoder.encode(request.password()));
+            request.password());
         userService.saveUser(user);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> userLogin(
+    public ResponseEntity<LoginResponse> userLogin(
             @RequestBody AuthRequest request,
             @RequestParam("remember-me") Boolean rememberMe,
             HttpServletRequest req,
             HttpServletResponse res
     ) {
-        Authentication authRequest =
-            UsernamePasswordAuthenticationToken.unauthenticated(
-                request.login(),
-                request.password());
-        Authentication authResponse = authenticationManager.authenticate(authRequest);
+        try {
+            Authentication authRequest =
+                    UsernamePasswordAuthenticationToken.unauthenticated(
+                            request.login(),
+                            request.password());
 
-        if (authResponse.isAuthenticated()) {
+            Authentication authResponse = authenticationManager.authenticate(authRequest); // throws AuthenticationException if authentication fails
+
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authResponse);
             SecurityContextHolder.setContext(context);
@@ -80,8 +80,8 @@ public class AuthController {
                 rememberMeServices.loginSuccess(req, res, authResponse);
             }
 
-            return new ResponseEntity<>(request.login(), HttpStatus.OK);
-        } else {
+            return new ResponseEntity<>(new LoginResponse(request.login()), HttpStatus.OK);
+        } catch (AuthenticationException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
