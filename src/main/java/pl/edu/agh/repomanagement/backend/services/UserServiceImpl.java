@@ -1,6 +1,7 @@
 package pl.edu.agh.repomanagement.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.repomanagement.backend.models.User;
 import pl.edu.agh.repomanagement.backend.repositories.UserRepository;
@@ -12,14 +13,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User saveUser(User user) {
-        return userRepository.save(user);
+        User encryptedUser = new User(user.getLogin(), passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(encryptedUser);
     }
 
     @Override
