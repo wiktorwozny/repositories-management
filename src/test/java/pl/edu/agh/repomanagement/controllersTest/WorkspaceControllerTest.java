@@ -11,12 +11,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.edu.agh.repomanagement.backend.models.Workspace;
 import pl.edu.agh.repomanagement.backend.services.WorkspaceService;
-
+import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser
 class WorkspaceControllerTest {
 
     @Autowired
