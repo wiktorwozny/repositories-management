@@ -25,7 +25,7 @@ jobs:
         env:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: /.github/workflows
+          LINTER_RULES_PATH: .github/workflows
           VALIDATE_JAVA: true
           JAVA_FILE_NAME: java_linter_rules.xml
           VALIDATE_JAVASCRIPT_STANDARD: true
