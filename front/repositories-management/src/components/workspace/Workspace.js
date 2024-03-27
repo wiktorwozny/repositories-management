@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AddWorkspace from "./AddWorkspace";
 import AddRepository from "./AddRepository";
+import pullRequests from "./PullRequests";
+import PullRequests from "./PullRequests";
 const WorkspaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,19 +67,34 @@ const RepositoryList = styled.div`
   width: 100%;
 `;
 
+const RepositoryWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 100%;
+  width: 90%;
+`;
+
 const Repository = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  width: 96%;
-  //padding: 1rem;
+  width: 100%;
   border: 1px solid #ddd;
+  border-radius: 4px;
 `;
+
 const RepositoryInfo = styled.div`
+   display: flex;
+   padding: 1rem;
+`;
+
+const RepositoryManagement = styled.div`
   display: flex;
-  padding: 1rem;
+  flex-direction: row;
+  gap: 1rem;
 `;
 
 const RepositoryName = styled.h2`
@@ -87,11 +104,24 @@ const RepositoryName = styled.h2`
   word-break: break-all;
 `;
 
+const PullRequestsButton = styled.button`
+  margin: 10px;
+`;
+
 function Workspace(props) {
   const [expanded, setExpanded] = React.useState(false);
+  const [selectedRepo, setSelectedRepo] = React.useState(false);
   const handleExpand = () => {
     setExpanded((prev) => !prev);
   };
+
+  const handleRepoExpand = (repoid) => {
+    if(repoid === selectedRepo) {
+      setSelectedRepo(null);
+    } else {
+      setSelectedRepo(repoid);
+    }
+  }
 
   const workspace = props.workspace;
 
@@ -115,23 +145,33 @@ function Workspace(props) {
       {expanded && (
         <RepositoryList>
           {workspace.repositories?.map((repository) => (
-            <Repository key={repository.id}>
-              <RepositoryInfo>
-                <RepositoryName>{repository.name}</RepositoryName>
-                {" - "}
-                <RepositoryName>
-                  <a href={repository.lastCommit?.url}>
-                    {repository.lastCommit?.date &&
-                      new Date(repository.lastCommit.date).toLocaleString()}
-                  </a>
-                </RepositoryName>
-              </RepositoryInfo>
-              <AddRepository
-                editMode={true}
-                repository={repository}
-                workspace={props.workspace}
-              />
-            </Repository>
+            <RepositoryWrapper key={repository.id}>
+              <Repository>
+                <RepositoryInfo>
+                  <RepositoryName>{repository.name}</RepositoryName>
+                  {" - "}
+                  <RepositoryName>
+                    <a href={repository.lastCommit?.url}>
+                      {repository.lastCommit?.date &&
+                          new Date(repository.lastCommit.date).toLocaleString()}
+                    </a>
+                  </RepositoryName>
+                </RepositoryInfo>
+                <RepositoryManagement>
+                  <AddRepository
+                      editMode={true}
+                      repository={repository}
+                      workspace={props.workspace}
+                  />
+                  <PullRequestsButton onClick={() => handleRepoExpand(repository.id)}>
+                    {selectedRepo === repository.id ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                  </PullRequestsButton>
+                </RepositoryManagement>
+              </Repository>
+              {selectedRepo === repository.id && (
+                  <PullRequests repositoryUrl={repository.url}/>
+              )}
+            </RepositoryWrapper>
           ))}
         </RepositoryList>
       )}
