@@ -1,8 +1,6 @@
 package pl.edu.agh.repomanagement.backend.services;
 
-import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,9 @@ public class LastCommitServiceImpl implements LastCommitService {
 
     public LastCommitServiceImpl() {
         try {
-            this.github = GitHubBuilder.fromEnvironment().build();
+            this.github = GitHubBuilder.fromEnvironment()
+                    .withRateLimitHandler(RateLimitHandler.FAIL)
+                    .build();
         } catch (IOException e) {
             logger.error("Error occurred while creating GitHub instance", e);
         }
@@ -33,13 +33,12 @@ public class LastCommitServiceImpl implements LastCommitService {
         LastCommit lastCommit = null;
 
         try {
+
             String repoUrl = repository.getUrl();
             String[] splitUrl = repoUrl.split("/");
             String userName = splitUrl[3];
             String repoName = splitUrl[4];
-
-            org.kohsuke.github.GHRepository gitRepository = github.getRepository(userName + "/" + repoName);
-
+            GHRepository gitRepository = github.getRepository(userName + "/" + repoName);
             List<GHCommit> listCommits = gitRepository.listCommits().toList();
 
             if (listCommits.isEmpty()) {

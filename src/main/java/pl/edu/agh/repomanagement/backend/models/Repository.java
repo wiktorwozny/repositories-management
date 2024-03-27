@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pl.edu.agh.repomanagement.backend.ObjectIdJsonSerializer;
+import pl.edu.agh.repomanagement.backend.records.LastCommit;
 
 import java.util.Objects;
 
@@ -16,6 +17,8 @@ public class Repository {
     private String name;
 
     private String url;
+
+    private LastCommit lastCommit;
 
     public Repository() {}
     public Repository(String name, String url) {
@@ -34,6 +37,15 @@ public class Repository {
     public String getUrl() {
         return url;
     }
+
+    public LastCommit getLastCommit() {
+        return lastCommit;
+    }
+
+    public void setLastCommit(LastCommit lastCommit) {
+        this.lastCommit = lastCommit;
+    }
+
 
     public void setId(ObjectId id) {
         this.id = id;

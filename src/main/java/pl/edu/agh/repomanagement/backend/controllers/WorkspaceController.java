@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.repomanagement.backend.models.Workspace;
+import pl.edu.agh.repomanagement.backend.services.LastCommitService;
 import pl.edu.agh.repomanagement.backend.services.WorkspaceService;
 
 import java.util.ArrayList;
@@ -16,15 +17,24 @@ import java.util.List;
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
+    private final LastCommitService lastCommitService;
 
     @Autowired
-    public WorkspaceController(WorkspaceService workspaceService) {
+    public WorkspaceController(WorkspaceService workspaceService, LastCommitService lastCommitService ) {
         this.workspaceService = workspaceService;
+        this.lastCommitService = lastCommitService;
+
     }
 
     @GetMapping
     public ResponseEntity<List<Workspace>> getAllWorkspaces() {
         List<Workspace> workspaces = workspaceService.getAllWorkspaces();
+        for(var workspace : workspaces) {
+
+            for(var repository : workspace.getRepositories()) {
+                repository.setLastCommit(lastCommitService.getLastCommit(repository));
+            }
+        }
 
         return new ResponseEntity<>(workspaces, HttpStatus.OK);
     }
