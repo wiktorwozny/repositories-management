@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataMongoTest
 class UserRepositoryTest {
@@ -88,4 +89,30 @@ class UserRepositoryTest {
         assertThat(foundUser.getLogin()).isEqualTo(user.getLogin());
         assertThat(foundUser.getPassword()).isEqualTo(user.getPassword());
     }
+
+    @Test
+    void testFindByLogin() {
+        //Given
+        User user = new User("Find Test User", "password");
+        userRepository.save(user);
+
+        //When
+        Optional<User> userRepositoryOptional = userRepository.findByLogin(user.getLogin());
+
+        //Then
+        assertThat(userRepositoryOptional).isPresent();
+        User foundUser = userRepositoryOptional.get();
+        assertEquals(foundUser.getLogin(), user.getLogin());
+        assertEquals(foundUser.getPassword(), user.getPassword());
+    }
 }
+
+
+
+
+
+
+
+
+
+
