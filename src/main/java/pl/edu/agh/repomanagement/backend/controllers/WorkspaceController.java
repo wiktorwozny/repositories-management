@@ -29,7 +29,6 @@ public class WorkspaceController {
     @GetMapping
     public ResponseEntity<List<Workspace>> getAllWorkspaces() {
         List<Workspace> workspaces = workspaceService.getAllWorkspaces();
-        System.out.println("chuj");
         for(var workspace : workspaces) {
 
             for(var repository : workspace.getRepositories()) {

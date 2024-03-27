@@ -59,7 +59,6 @@ const PullRequests = ({ repositoryUrl }) => {
                     params: { repositoryUrl },
                 });
                 setPullRequests(response.data);
-                console.log("pull requests fetch", response.data);
             } catch (error) {
                 console.error("Error fetching pull requests: ", error);
             }
