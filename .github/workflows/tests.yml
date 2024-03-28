@@ -21,9 +21,11 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
+        working-directory: ./back-end
 
       - name: Run tests
         run: gradle test --tests '*ServiceTest'
+        working-directory: ./back-end
 
 
   frontend:
@@ -40,8 +42,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./front/repositories-management
+        working-directory: ./front-end
 
       - name: Run tests
         run: npm run test
-        working-directory: ./front/repositories-management
+        working-directory: ./front-end
