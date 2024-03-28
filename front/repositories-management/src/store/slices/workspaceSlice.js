@@ -116,7 +116,19 @@ export const fetchPullRequests = createAsyncThunk(
 const workspaceSlice = createSlice({
   name: "workspace",
   initialState: workspaceAdapter.getInitialState(),
-  reducers: {},
+  reducers: {
+    sortRepositories: (state, action) => {
+      const { workspaceId, sortKey } = action.payload;
+      const workspace = state.workspaceList.find(
+        (workspace) => workspace.id === workspaceId,
+      );
+      workspace.repositories.sort((a, b) => {
+        if (a[sortKey] > b[sortKey]) return 1;
+        if (a[sortKey] < b[sortKey]) return -1;
+        return 0;
+      });
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceList.fulfilled, (state, action) => {
       state.workspaceList = action.payload;
@@ -181,6 +193,8 @@ const workspaceSlice = createSlice({
 });
 
 export default workspaceSlice.reducer;
+
+export const { sortRepositories } = workspaceSlice.actions;
 
 export const { selectAll: selectAllWorkspace } = workspaceAdapter.getSelectors(
   (state) => state.workspace,

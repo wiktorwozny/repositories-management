@@ -5,13 +5,21 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useEffect } from "react";
 import styled from "styled-components";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { Button } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AddWorkspace from "./AddWorkspace";
 import AddRepository from "./AddRepository";
 import pullRequests from "./PullRequests";
 import PullRequests from "./PullRequests";
+import { sortRepositories } from "../../store/slices/workspaceSlice";
+
 const WorkspaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -110,10 +118,13 @@ const PullRequestsButton = styled.button`
 
 function Workspace(props) {
   const [expanded, setExpanded] = React.useState(false);
+  const [sortKey, setSortKey] = React.useState("default");
   const [selectedRepo, setSelectedRepo] = React.useState(false);
   const handleExpand = () => {
     setExpanded((prev) => !prev);
   };
+
+  const dispatch = useDispatch();
 
   const handleRepoExpand = (repoid) => {
     if (repoid === selectedRepo) {
@@ -121,6 +132,16 @@ function Workspace(props) {
     } else {
       setSelectedRepo(repoid);
     }
+  };
+
+  const handleChangeSort = (event) => {
+    setSortKey(event.target.value);
+    dispatch(
+      sortRepositories({
+        workspaceId: props.workspace.id,
+        sortKey: event.target.value,
+      }),
+    );
   };
 
   const workspace = props.workspace;
@@ -133,6 +154,20 @@ function Workspace(props) {
           <WorkspaceCourse>{workspace.courseName}</WorkspaceCourse>
         </TitleWrapper>
         <ManagementWrapper>
+          <FormControl>
+            <InputLabel id={"sort-by"}>Sort by</InputLabel>
+            <Select
+              labelId={"sort-by"}
+              label={"Sort by"}
+              value={sortKey}
+              onChange={handleChangeSort}
+            >
+              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="lastCommit.date">Last Commit</MenuItem>
+            </Select>
+          </FormControl>
+
           <AddRepository workspace={workspace} />
           <AddWorkspace editMode={true} workspace={workspace} />
 
