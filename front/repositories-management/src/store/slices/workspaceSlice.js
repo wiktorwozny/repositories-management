@@ -122,6 +122,18 @@ const workspaceSlice = createSlice({
       const workspace = state.workspaceList.find(
         (workspace) => workspace.id === workspaceId,
       );
+      if (sortKey === "lastCommit") {
+        workspace.repositories.sort((a, b) => {
+          if (a.lastCommit && b.lastCommit) {
+            if (a.lastCommit.date > b.lastCommit.date) return 1;
+            if (a.lastCommit.date < b.lastCommit.date) return -1;
+            return 0;
+          }
+          return 0;
+        });
+        return;
+      }
+
       workspace.repositories.sort((a, b) => {
         if (a[sortKey] > b[sortKey]) return 1;
         if (a[sortKey] < b[sortKey]) return -1;

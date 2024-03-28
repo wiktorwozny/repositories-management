@@ -164,7 +164,7 @@ function Workspace(props) {
             >
               <MenuItem value="default">Default</MenuItem>
               <MenuItem value="name">Name</MenuItem>
-              <MenuItem value="lastCommit.date">Last Commit</MenuItem>
+              <MenuItem value="lastCommit">Last Commit</MenuItem>
             </Select>
           </FormControl>
 
