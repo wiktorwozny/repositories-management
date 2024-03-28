@@ -3,6 +3,7 @@ import client from "../../api/client";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { fetchPullRequests } from "../../store/slices/workspaceSlice";
+import AddReview from "./AddReview";
 
 const PullRequestsWrapper = styled.div`
   display: flex;
@@ -33,10 +34,18 @@ const PullRequestInfo = styled.div`
   padding: 1rem;
 `;
 
+const PullRequestReview = styled.h4`
+  font-size: 0.9rem;
+  margin: 0;
+  color: #666;
+  word-break: break-all;
+`;
+
 const PullRequestAuthor = styled.div`
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  align-items: center;
 `;
 
 const PullRequestLink = styled.a`
@@ -52,6 +61,7 @@ const PullRequestLink = styled.a`
 
 const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
   const Workspaces = useSelector((state) => state.workspace.workspaceList);
+  const reviews = useSelector((state) => state.workspace.reviews);
 
   const thisPrs = Workspaces.find(
     (workspace) => workspace.id === workspaceId,
@@ -78,7 +88,15 @@ const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
           <PullRequestItem key={pr.id}>
             <PullRequestInfo>
               <PullRequestLink href={pr.url}>{pr.title}</PullRequestLink>
+              <PullRequestReview>
+                {reviews[pr.url] ? reviews[pr.url] : "No review yet"}
+              </PullRequestReview>
               <PullRequestAuthor>
+                <AddReview
+                  workspaceId={workspaceId}
+                  repositoryId={repositoryId}
+                  pullRequestUrl={pr.url}
+                />
                 <span>by {pr.userLogin}</span>
               </PullRequestAuthor>
             </PullRequestInfo>

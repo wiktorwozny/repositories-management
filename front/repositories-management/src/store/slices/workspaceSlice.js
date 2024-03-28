@@ -113,9 +113,20 @@ export const fetchPullRequests = createAsyncThunk(
   },
 );
 
+export const addReview = createAsyncThunk(
+  "workspace/addReview",
+  async (review) => {
+    // const response = await client.post(
+    //     `/api/reviews`,
+    //     review,
+    // );
+    return review;
+  },
+);
+
 const workspaceSlice = createSlice({
   name: "workspace",
-  initialState: workspaceAdapter.getInitialState(),
+  initialState: { ...workspaceAdapter.getInitialState(), reviews: {} },
   reducers: {
     sortRepositories: (state, action) => {
       const { workspaceId, sortKey } = action.payload;
@@ -200,6 +211,13 @@ const workspaceSlice = createSlice({
       }
       state.workspaceList[index].repositories[repositoryIndex].pullRequests =
         action.payload.pullRequests || [];
+    });
+
+    builder.addCase(addReview.fulfilled, (state, action) => {
+      const { workspaceId, repositoryId, pullRequestUrl, review } =
+        action.payload;
+
+      state.reviews[pullRequestUrl] = review;
     });
   },
 });
