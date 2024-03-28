@@ -87,8 +87,8 @@ const Repository = styled.div`
 `;
 
 const RepositoryInfo = styled.div`
-   display: flex;
-   padding: 1rem;
+  display: flex;
+  padding: 1rem;
 `;
 
 const RepositoryManagement = styled.div`
@@ -116,12 +116,12 @@ function Workspace(props) {
   };
 
   const handleRepoExpand = (repoid) => {
-    if(repoid === selectedRepo) {
+    if (repoid === selectedRepo) {
       setSelectedRepo(null);
     } else {
       setSelectedRepo(repoid);
     }
-  }
+  };
 
   const workspace = props.workspace;
 
@@ -153,23 +153,33 @@ function Workspace(props) {
                   <RepositoryName>
                     <a href={repository.lastCommit?.url}>
                       {repository.lastCommit?.date &&
-                          new Date(repository.lastCommit.date).toLocaleString()}
+                        new Date(repository.lastCommit.date).toLocaleString()}
                     </a>
                   </RepositoryName>
                 </RepositoryInfo>
                 <RepositoryManagement>
                   <AddRepository
-                      editMode={true}
-                      repository={repository}
-                      workspace={props.workspace}
+                    editMode={true}
+                    repository={repository}
+                    workspace={props.workspace}
                   />
-                  <PullRequestsButton onClick={() => handleRepoExpand(repository.id)}>
-                    {selectedRepo === repository.id ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                  <PullRequestsButton
+                    onClick={() => handleRepoExpand(repository.id)}
+                  >
+                    {selectedRepo === repository.id ? (
+                      <ArrowDropUpIcon />
+                    ) : (
+                      <ArrowDropDownIcon />
+                    )}
                   </PullRequestsButton>
                 </RepositoryManagement>
               </Repository>
               {selectedRepo === repository.id && (
-                  <PullRequests repositoryUrl={repository.url}/>
+                <PullRequests
+                  repositoryUrl={repository.url}
+                  repositoryId={repository.id}
+                  workspaceId={workspace.id}
+                />
               )}
             </RepositoryWrapper>
           ))}

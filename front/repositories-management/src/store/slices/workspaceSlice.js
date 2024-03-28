@@ -80,6 +80,39 @@ export const editRepository = createAsyncThunk(
   },
 );
 
+export const fetchPullRequests = createAsyncThunk(
+  "workspace/fetchPullRequests",
+  async (queryObj, state) => {
+    //do not fetch if exsists
+    const workspace = state
+      .getState()
+      .workspace.workspaceList.find(
+        (workspace) => workspace.id === queryObj.workspaceId,
+      );
+    const repository = workspace.repositories.find(
+      (repository) => repository.id === queryObj.repositoryId,
+    );
+    if (repository.pullRequests) {
+      return {
+        workspaceId: queryObj.workspaceId,
+        repositoryId: queryObj.repositoryId,
+        pullRequests: repository.pullRequests,
+      };
+    }
+
+    console.log("queryObj", queryObj);
+    const { repositoryUrl, workspaceId, repositoryId } = queryObj;
+    const response = await client.get("/pull-requests", {
+      params: { repositoryUrl },
+    });
+    return {
+      workspaceId,
+      repositoryId,
+      pullRequests: response.data,
+    };
+  },
+);
+
 const workspaceSlice = createSlice({
   name: "workspace",
   initialState: workspaceAdapter.getInitialState(),
@@ -129,6 +162,20 @@ const workspaceSlice = createSlice({
         (repository) => repository.id === action.payload.id,
       );
       state.workspaceList[index].repositories[repositoryIndex] = action.payload;
+    });
+
+    builder.addCase(fetchPullRequests.fulfilled, (state, action) => {
+      const index = state.workspaceList.findIndex(
+        (workspace) => workspace.id === action.payload.workspaceId,
+      );
+      const repositoryIndex = state.workspaceList[index].repositories.findIndex(
+        (repository) => repository.id === action.payload.repositoryId,
+      );
+      if (action.payload.pullRequests.length === 0) {
+        return;
+      }
+      state.workspaceList[index].repositories[repositoryIndex].pullRequests =
+        action.payload.pullRequests || [];
     });
   },
 });
