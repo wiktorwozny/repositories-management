@@ -34,6 +34,10 @@ public class LastCommitServiceImpl implements LastCommitService {
 
         try {
 
+            if(repository == null) {
+                return null;
+            }
+
             String repoUrl = repository.getUrl();
             String[] splitUrl = repoUrl.split("/");
 

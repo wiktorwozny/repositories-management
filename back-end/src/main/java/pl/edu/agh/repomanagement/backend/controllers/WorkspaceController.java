@@ -34,6 +34,9 @@ public class WorkspaceController {
                 continue;
             }
             for(var repository : workspace.getRepositories()) {
+                if(repository == null) {
+                    continue;
+                }
                 repository.setLastCommit(lastCommitService.getLastCommit(repository));
             }
         }

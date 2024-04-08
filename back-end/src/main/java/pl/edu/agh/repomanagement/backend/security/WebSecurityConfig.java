@@ -29,7 +29,8 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
+                //todo change to .authenticated() after implementing user roles
+                .anyRequest().permitAll()
             )
             .rememberMe(rememberMe -> rememberMe
                 .key("sEDf4V2svx7LdIKqcJz6EZWjJRTlol39FhbonqRmQMiu18QXMUrzbAcfHZ2VFZCQ")
