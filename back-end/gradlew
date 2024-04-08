@@ -239,6 +239,12 @@ fi
 # an unmatched quote.
 #
 
+# Check for environment variable to disable tests
+if [ -n "$DISABLE_TESTS" ] && [ "$DISABLE_TESTS" = "true" ]; then
+  # Add flag to skip tests (modify as needed)
+  GRADLE_OPTS="$GRADLE_OPTS --no-tests"
+fi
+
 eval "set -- $(
         printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
         xargs -n1 |
