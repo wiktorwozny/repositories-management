@@ -6,6 +6,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+ARG DISABLE_TESTS
+RUN if [ "$DISABLE_TESTS" != "true" ]; then npm run build; fi
 
 CMD ["npm", "start"]

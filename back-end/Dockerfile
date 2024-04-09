@@ -2,7 +2,8 @@ FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /workspace/app
 
 COPY . /workspace/app
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build
+ARG DISABLE_TESTS
+RUN --mount=type=cache,target=/root/.gradle if [ "$DISABLE_TESTS" != "true" ]; then ./gradlew clean build; else ./gradlew clean build -x test; fi
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
 
 FROM eclipse-temurin:17-jdk-alpine

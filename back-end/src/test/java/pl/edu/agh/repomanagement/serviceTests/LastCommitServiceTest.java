@@ -24,6 +24,7 @@ class LastCommitServiceTest {
 
         LastCommit lastCommit = lastCommitService.getLastCommit(repo);
 
+        assertTrue(lastCommit != null);
         assertFalse(lastCommit.commitName().isEmpty());
         assertTrue(lastCommit.date().before(new Date()));
         assertTrue(lastCommit.url().startsWith("https://github.com/wiktorwozny/repositories-management/commit"));
