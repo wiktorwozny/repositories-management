@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import client from "../../api/client"
+import client from "../../api/client";
 import styled from "styled-components";
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from "react-redux";
+import { fetchPullRequests } from "../../store/slices/workspaceSlice";
+import AddReview from "./AddReview";
 
 const PullRequestsWrapper = styled.div`
   display: flex;
@@ -32,10 +34,18 @@ const PullRequestInfo = styled.div`
   padding: 1rem;
 `;
 
+const PullRequestReview = styled.h4`
+  font-size: 0.9rem;
+  margin: 0;
+  color: #666;
+  word-break: break-all;
+`;
+
 const PullRequestAuthor = styled.div`
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  align-items: center;
 `;
 
 const PullRequestLink = styled.a`
@@ -49,44 +59,54 @@ const PullRequestLink = styled.a`
   }
 `;
 
-const PullRequests = ({ repositoryUrl }) => {
-    const [pullRequests, setPullRequests] = useState([]);
+const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
+  const Workspaces = useSelector((state) => state.workspace.workspaceList);
+  const reviews = useSelector((state) => state.workspace.reviews);
 
-    useEffect(() => {
-        const fetchPullRequests = async () => {
-            try {
-                const response = await client.get("/pull-requests", {
-                    params: { repositoryUrl },
-                });
-                setPullRequests(response.data);
-            } catch (error) {
-                console.error("Error fetching pull requests: ", error);
-            }
-        };
+  const thisPrs = Workspaces.find(
+    (workspace) => workspace.id === workspaceId,
+  ).repositories.find(
+    (repository) => repository.id === repositoryId,
+  ).pullRequests;
 
-        fetchPullRequests();
-    }, [repositoryUrl]);
+  const dispatch = useDispatch();
 
-    return (
-        <PullRequestsWrapper>
-            {pullRequests.length > 0 ? (
-                pullRequests.map((pr) => (
-                    <PullRequestItem key={pr.id}>
-                        <PullRequestInfo>
-                            <PullRequestLink href={pr.url}>
-                                {pr.title}
-                            </PullRequestLink>
-                            <PullRequestAuthor>
-                                <span>by {pr.userLogin}</span>
-                            </PullRequestAuthor>
-                        </PullRequestInfo>
-                    </PullRequestItem>
-                ))
-            ) : (
-                <p>No pull requests found for this repository.</p>
-            )}
-        </PullRequestsWrapper>
+  useEffect(() => {
+    dispatch(
+      fetchPullRequests({
+        workspaceId,
+        repositoryId,
+        repositoryUrl,
+      }),
     );
+  }, [repositoryUrl]);
+
+  return (
+    <PullRequestsWrapper>
+      {thisPrs && thisPrs.length > 0 ? (
+        thisPrs.map((pr) => (
+          <PullRequestItem key={pr.id}>
+            <PullRequestInfo>
+              <PullRequestLink href={pr.url}>{pr.title}</PullRequestLink>
+              <PullRequestReview>
+                {reviews[pr.url] ? reviews[pr.url] : "No review yet"}
+              </PullRequestReview>
+              <PullRequestAuthor>
+                <AddReview
+                  workspaceId={workspaceId}
+                  repositoryId={repositoryId}
+                  pullRequestUrl={pr.url}
+                />
+                <span>by {pr.userLogin}</span>
+              </PullRequestAuthor>
+            </PullRequestInfo>
+          </PullRequestItem>
+        ))
+      ) : (
+        <p>No pull requests found for this repository.</p>
+      )}
+    </PullRequestsWrapper>
+  );
 };
 
 export default connect()(PullRequests);

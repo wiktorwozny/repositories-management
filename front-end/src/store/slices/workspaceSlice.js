@@ -80,10 +80,78 @@ export const editRepository = createAsyncThunk(
   },
 );
 
+export const fetchPullRequests = createAsyncThunk(
+  "workspace/fetchPullRequests",
+  async (queryObj, state) => {
+    //do not fetch if exsists
+    const workspace = state
+      .getState()
+      .workspace.workspaceList.find(
+        (workspace) => workspace.id === queryObj.workspaceId,
+      );
+    const repository = workspace.repositories.find(
+      (repository) => repository.id === queryObj.repositoryId,
+    );
+    if (repository.pullRequests) {
+      return {
+        workspaceId: queryObj.workspaceId,
+        repositoryId: queryObj.repositoryId,
+        pullRequests: repository.pullRequests,
+      };
+    }
+
+    console.log("queryObj", queryObj);
+    const { repositoryUrl, workspaceId, repositoryId } = queryObj;
+    const response = await client.get("/pull-requests", {
+      params: { repositoryUrl },
+    });
+    return {
+      workspaceId,
+      repositoryId,
+      pullRequests: response.data,
+    };
+  },
+);
+
+export const addReview = createAsyncThunk(
+  "workspace/addReview",
+  async (review) => {
+    // const response = await client.post(
+    //     `/api/reviews`,
+    //     review,
+    // );
+    return review;
+  },
+);
+
 const workspaceSlice = createSlice({
   name: "workspace",
-  initialState: workspaceAdapter.getInitialState(),
-  reducers: {},
+  initialState: { ...workspaceAdapter.getInitialState(), reviews: {} },
+  reducers: {
+    sortRepositories: (state, action) => {
+      const { workspaceId, sortKey } = action.payload;
+      const workspace = state.workspaceList.find(
+        (workspace) => workspace.id === workspaceId,
+      );
+      if (sortKey === "lastCommit") {
+        workspace.repositories.sort((a, b) => {
+          if (a.lastCommit && b.lastCommit) {
+            if (a.lastCommit.date > b.lastCommit.date) return 1;
+            if (a.lastCommit.date < b.lastCommit.date) return -1;
+            return 0;
+          }
+          return 0;
+        });
+        return;
+      }
+
+      workspace.repositories.sort((a, b) => {
+        if (a[sortKey] > b[sortKey]) return 1;
+        if (a[sortKey] < b[sortKey]) return -1;
+        return 0;
+      });
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceList.fulfilled, (state, action) => {
       state.workspaceList = action.payload;
@@ -130,10 +198,33 @@ const workspaceSlice = createSlice({
       );
       state.workspaceList[index].repositories[repositoryIndex] = action.payload;
     });
+
+    builder.addCase(fetchPullRequests.fulfilled, (state, action) => {
+      const index = state.workspaceList.findIndex(
+        (workspace) => workspace.id === action.payload.workspaceId,
+      );
+      const repositoryIndex = state.workspaceList[index].repositories.findIndex(
+        (repository) => repository.id === action.payload.repositoryId,
+      );
+      if (action.payload.pullRequests.length === 0) {
+        return;
+      }
+      state.workspaceList[index].repositories[repositoryIndex].pullRequests =
+        action.payload.pullRequests || [];
+    });
+
+    builder.addCase(addReview.fulfilled, (state, action) => {
+      const { workspaceId, repositoryId, pullRequestUrl, review } =
+        action.payload;
+
+      state.reviews[pullRequestUrl] = review;
+    });
   },
 });
 
 export default workspaceSlice.reducer;
+
+export const { sortRepositories } = workspaceSlice.actions;
 
 export const { selectAll: selectAllWorkspace } = workspaceAdapter.getSelectors(
   (state) => state.workspace,
