@@ -30,8 +30,13 @@ public class WorkspaceController {
     public ResponseEntity<List<Workspace>> getAllWorkspaces() {
         List<Workspace> workspaces = workspaceService.getAllWorkspaces();
         for(var workspace : workspaces) {
-
+            if( workspace.getRepositories() == null) {
+                continue;
+            }
             for(var repository : workspace.getRepositories()) {
+                if(repository == null) {
+                    continue;
+                }
                 repository.setLastCommit(lastCommitService.getLastCommit(repository));
             }
         }

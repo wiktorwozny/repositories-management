@@ -34,8 +34,17 @@ public class LastCommitServiceImpl implements LastCommitService {
 
         try {
 
+            if(repository == null) {
+                return null;
+            }
+
             String repoUrl = repository.getUrl();
             String[] splitUrl = repoUrl.split("/");
+
+            if(splitUrl.length < 4) {
+                return null;
+            }
+
             String userName = splitUrl[3];
             String repoName = splitUrl[4];
             GHRepository gitRepository = github.getRepository(userName + "/" + repoName);
