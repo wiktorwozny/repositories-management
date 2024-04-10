@@ -31,6 +31,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 //todo change to .authenticated() after implementing user roles
                 .anyRequest().permitAll()
+
             )
             .rememberMe(rememberMe -> rememberMe
                 .key("sEDf4V2svx7LdIKqcJz6EZWjJRTlol39FhbonqRmQMiu18QXMUrzbAcfHZ2VFZCQ")

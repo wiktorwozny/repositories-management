@@ -5,13 +5,21 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useEffect } from "react";
 import styled from "styled-components";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { Button } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AddWorkspace from "./AddWorkspace";
 import AddRepository from "./AddRepository";
 import pullRequests from "./PullRequests";
 import PullRequests from "./PullRequests";
+import { sortRepositories } from "../../store/slices/workspaceSlice";
+
 const WorkspaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -87,8 +95,8 @@ const Repository = styled.div`
 `;
 
 const RepositoryInfo = styled.div`
-   display: flex;
-   padding: 1rem;
+  display: flex;
+  padding: 1rem;
 `;
 
 const RepositoryManagement = styled.div`
@@ -110,18 +118,31 @@ const PullRequestsButton = styled.button`
 
 function Workspace(props) {
   const [expanded, setExpanded] = React.useState(false);
+  const [sortKey, setSortKey] = React.useState("default");
   const [selectedRepo, setSelectedRepo] = React.useState(false);
   const handleExpand = () => {
     setExpanded((prev) => !prev);
   };
 
+  const dispatch = useDispatch();
+
   const handleRepoExpand = (repoid) => {
-    if(repoid === selectedRepo) {
+    if (repoid === selectedRepo) {
       setSelectedRepo(null);
     } else {
       setSelectedRepo(repoid);
     }
-  }
+  };
+
+  const handleChangeSort = (event) => {
+    setSortKey(event.target.value);
+    dispatch(
+      sortRepositories({
+        workspaceId: props.workspace.id,
+        sortKey: event.target.value,
+      }),
+    );
+  };
 
   const workspace = props.workspace;
 
@@ -133,6 +154,20 @@ function Workspace(props) {
           <WorkspaceCourse>{workspace.courseName}</WorkspaceCourse>
         </TitleWrapper>
         <ManagementWrapper>
+          <FormControl>
+            <InputLabel id={"sort-by"}>Sort by</InputLabel>
+            <Select
+              labelId={"sort-by"}
+              label={"Sort by"}
+              value={sortKey}
+              onChange={handleChangeSort}
+            >
+              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="lastCommit">Last Commit</MenuItem>
+            </Select>
+          </FormControl>
+
           <AddRepository workspace={workspace} />
           <AddWorkspace editMode={true} workspace={workspace} />
 
@@ -153,23 +188,33 @@ function Workspace(props) {
                   <RepositoryName>
                     <a href={repository.lastCommit?.url}>
                       {repository.lastCommit?.date &&
-                          new Date(repository.lastCommit.date).toLocaleString()}
+                        new Date(repository.lastCommit.date).toLocaleString()}
                     </a>
                   </RepositoryName>
                 </RepositoryInfo>
                 <RepositoryManagement>
                   <AddRepository
-                      editMode={true}
-                      repository={repository}
-                      workspace={props.workspace}
+                    editMode={true}
+                    repository={repository}
+                    workspace={props.workspace}
                   />
-                  <PullRequestsButton onClick={() => handleRepoExpand(repository.id)}>
-                    {selectedRepo === repository.id ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                  <PullRequestsButton
+                    onClick={() => handleRepoExpand(repository.id)}
+                  >
+                    {selectedRepo === repository.id ? (
+                      <ArrowDropUpIcon />
+                    ) : (
+                      <ArrowDropDownIcon />
+                    )}
                   </PullRequestsButton>
                 </RepositoryManagement>
               </Repository>
               {selectedRepo === repository.id && (
-                  <PullRequests repositoryUrl={repository.url}/>
+                <PullRequests
+                  repositoryUrl={repository.url}
+                  repositoryId={repository.id}
+                  workspaceId={workspace.id}
+                />
               )}
             </RepositoryWrapper>
           ))}
