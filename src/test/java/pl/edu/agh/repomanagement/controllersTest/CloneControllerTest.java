@@ -1,28 +1,55 @@
 package pl.edu.agh.repomanagement.controllersTest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import pl.edu.agh.repomanagement.backend.controllers.CloneController;
 import pl.edu.agh.repomanagement.backend.models.Repository;
+import pl.edu.agh.repomanagement.backend.services.CloneServiceImpl;
 
-import java.io.File;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+class CloneControllerTest {
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CloneControllerIntegrationTest {
-
-    @Autowired
     private CloneController cloneController;
 
+    @Mock
+    private CloneServiceImpl cloneService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+        cloneController = new CloneController(cloneService);
+    }
+
     @Test
-    void testCloneRepository_Success() {
-        String repoUrl = "https://github.com/geekcomputers/Python";
-        String destination = "/tmp/test_repo";
-        Repository repo = new Repository("test", repoUrl );
-        cloneController.cloneRepository(repo, destination);
-        assertThat(new File(destination)).exists();
-        assertThat(new File(destination + "/.git")).exists();
+    void cloneRepository_ReturnsCorrectCommand() {
+        // Given
+        Repository repository = new Repository("name", "https://example.com/repo.git");
+
+        when(cloneService.generateCloneCommand(repository)).thenReturn("git clone " + repository.getUrl());
+
+        // When
+        String command = cloneController.cloneRepository(repository);
+
+        // Then
+        assertEquals("git clone https://example.com/repo.git", command);
+    }
+
+    @Test
+    void cloneRepository_CopiesCommandToClipboard() {
+        // Given
+        Repository repository = new Repository("name", "https://example.com/repo.git");
+        String expectedCommand = "git clone " + repository.getUrl();
+
+        when(cloneService.generateCloneCommand(repository)).thenReturn(expectedCommand);
+
+        // When
+        cloneController.cloneRepository(repository);
+
+        // Then
+        verify(cloneService, times(1)).copyToClipboard(expectedCommand);
     }
 }
