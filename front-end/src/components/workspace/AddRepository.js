@@ -26,6 +26,7 @@ import EditIcon from "@mui/icons-material/Edit";
 function AddWorkspace(props) {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  const [urlError, setUrlError] = React.useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -68,6 +69,18 @@ function AddWorkspace(props) {
     );
     handleClose();
   };
+
+  function isGitHubRepositoryURL(url) {
+    const githubRepoRegex = /^(https?:\/\/)?(www\.)?github\.com\/[\w-]+\/[\w-.]+(\/)?$/i;
+
+    return githubRepoRegex.test(url);
+  }
+
+  const handleUrlFieldChange = (e) => {
+    const url = e.target.value;
+
+    setUrlError(!isGitHubRepositoryURL(url));
+  }
 
   return (
     <React.Fragment>
@@ -118,6 +131,9 @@ function AddWorkspace(props) {
             defaultValue={props.repository?.name}
           />
           <TextField
+            required
+            onChange={handleUrlFieldChange}
+            error={urlError}
             margin="dense"
             id="url"
             name="url"
@@ -131,7 +147,7 @@ function AddWorkspace(props) {
         <DialogActions>
           <Button onClick={handleDelete}>Delete</Button>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={urlError}>Submit</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
