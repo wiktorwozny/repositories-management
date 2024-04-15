@@ -129,7 +129,7 @@ function AddWorkspace(props) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDelete}>Delete</Button>
+          <Button onClick={handleDelete} disabled={!props.editMode}>Delete</Button>
           <Button onClick={handleClose}>Cancel</Button>
           <Button type="submit">Submit</Button>
         </DialogActions>
