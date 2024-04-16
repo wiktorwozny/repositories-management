@@ -9,4 +9,8 @@ public interface UserService {
 
     User getUserByLogin(String login);
 
+    User getAuthenticatedUser();
+
+    User updateUser(ObjectId userId, User updatedUser);
+
 }

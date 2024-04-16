@@ -2,8 +2,10 @@ package pl.edu.agh.repomanagement.backend.models;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +16,8 @@ public class User {
     /* Login has to be unique*/
     private String login;
     private String password;
-    private List<Workspace> workspaces;
+    @DBRef
+    private List<Workspace> workspaces = new ArrayList<>();
 
     public User() {}
 
@@ -49,6 +52,14 @@ public class User {
 
     public List<Workspace> getWorkspaces() {
         return workspaces;
+    }
+
+    public void addWorkspace(Workspace workspace) {
+        workspaces.add(workspace);
+    }
+
+    public boolean removeWorkspace(Workspace workspace) {
+        return workspaces.remove(workspace);
     }
 
     public void setWorkspaces(List<Workspace> workspaces) {
