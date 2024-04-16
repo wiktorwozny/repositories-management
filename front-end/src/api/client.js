@@ -26,6 +26,8 @@ function AxiosInterceptor({ children }) {
                     console.log("401")
                     navigate("/login");
                 }
+
+                window.alert(error.response.data);
                 return Promise.reject(error);
             }
         )

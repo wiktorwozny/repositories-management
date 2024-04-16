@@ -43,9 +43,9 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> userSignup(@RequestBody AuthRequest request) {
+    public ResponseEntity<String> userSignup(@RequestBody AuthRequest request) {
         if (userService.getUserByLogin(request.login()) != null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);
         }
 
         User user = new User(
@@ -53,11 +53,11 @@ public class AuthController {
             request.password());
         userService.saveUser(user);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>("Successfully signed up", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> userLogin(
+    public ResponseEntity<?> userLogin(
             @RequestBody AuthRequest request,
             @RequestParam("remember-me") Boolean rememberMe,
             HttpServletRequest req,
@@ -82,7 +82,7 @@ public class AuthController {
 
             return new ResponseEntity<>(new LoginResponse(request.login()), HttpStatus.OK);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("User does not exist", HttpStatus.UNAUTHORIZED);
         }
     }
 
