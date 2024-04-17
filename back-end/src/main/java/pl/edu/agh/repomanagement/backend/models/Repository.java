@@ -3,10 +3,13 @@ package pl.edu.agh.repomanagement.backend.models;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pl.edu.agh.repomanagement.backend.ObjectIdJsonSerializer;
 import pl.edu.agh.repomanagement.backend.records.LastCommit;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Document(collection = "repositories")
@@ -19,6 +22,9 @@ public class Repository {
     private String url;
 
     private LastCommit lastCommit;
+
+    @DBRef
+    private List<Comment> comments = new ArrayList<>();;
 
     public Repository() {}
     public Repository(String name, String url) {
@@ -42,6 +48,8 @@ public class Repository {
         return lastCommit;
     }
 
+    public List<Comment> getComments(){return comments;}
+
     public void setLastCommit(LastCommit lastCommit) {
         this.lastCommit = lastCommit;
     }
@@ -58,6 +66,8 @@ public class Repository {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public void addComment(Comment comment){this.comments.add(comment);}
 
     @Override
     public boolean equals(Object o) {

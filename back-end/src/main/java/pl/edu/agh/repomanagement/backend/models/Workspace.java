@@ -19,6 +19,7 @@ public class Workspace {
     @DBRef
     private List<Repository> repositories;
 
+
     public Workspace() {
     }
 

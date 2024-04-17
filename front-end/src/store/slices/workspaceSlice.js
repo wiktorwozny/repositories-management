@@ -114,14 +114,17 @@ export const fetchPullRequests = createAsyncThunk(
 );
 
 export const addReview = createAsyncThunk(
-  "workspace/addReview",
-  async (review) => {
-    // const response = await client.post(
-    //     `/api/reviews`,
-    //     review,
-    // );
-    return review;
-  },
+    "workspace/addReview",
+    async ( {workspaceId,
+                review,
+                repositoryId,
+                pullRequestUrl}) => {
+        const endpoint = `/api/workspaces/${workspaceId}/repositories/${repositoryId}/review`;
+        let requestBody = pullRequestUrl + '&' + review;
+        const response = await client.post(endpoint, requestBody);
+        console.log("response", response);
+        return response.data;
+    },
 );
 
 const workspaceSlice = createSlice({

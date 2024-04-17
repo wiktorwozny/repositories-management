@@ -1,12 +1,16 @@
 package pl.edu.agh.repomanagement.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.repomanagement.backend.models.Comment;
 import pl.edu.agh.repomanagement.backend.models.Repository;
 import pl.edu.agh.repomanagement.backend.models.Workspace;
 import pl.edu.agh.repomanagement.backend.services.RepositoryService;
+import pl.edu.agh.repomanagement.backend.services.RepositoryServiceImpl;
 import pl.edu.agh.repomanagement.backend.services.WorkspaceService;
 
 import java.util.ArrayList;
@@ -19,6 +23,9 @@ public class RepositoryController {
 
     private final RepositoryService repositoryService;
     private final WorkspaceService workspaceService;
+
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryServiceImpl.class);
+
 
     public static class CreateRepositoryDto {
         private String name;
@@ -121,6 +128,27 @@ public class RepositoryController {
                                                        @RequestBody Repository updatedRepository) {
 
         Repository repository = repositoryService.updateRepository(rid, updatedRepository);
+        if( repository == null ) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(repository, HttpStatus.OK);
+    }
+    @PostMapping("/{rid}/review")
+    public ResponseEntity<Repository> addComment(@PathVariable("wid") String wid,
+                                                 @PathVariable("rid") String rid,
+                                                 @RequestBody String requestBody) {
+        String[] requestBodyParts = requestBody.split("&");
+
+        if(requestBodyParts.length != 2) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        String PRUrl = requestBodyParts[0].replace("\"", "");
+        String commentText = requestBodyParts[1];
+
+
+        Repository repository = repositoryService.addCommentToRepository(rid, PRUrl, commentText);
         if( repository == null ) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -31,7 +31,7 @@ public class LastCommitServiceImpl implements LastCommitService {
 
     public LastCommit getLastCommit(Repository repository) {
         LastCommit lastCommit = null;
-
+        System.out.println("getting last commit");
         try {
 
             if(repository == null) {
