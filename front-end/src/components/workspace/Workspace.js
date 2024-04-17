@@ -5,6 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useEffect } from "react";
 import styled from "styled-components";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
   Button,
   FormControl,
@@ -112,10 +113,6 @@ const RepositoryName = styled.h2`
   word-break: break-all;
 `;
 
-const PullRequestsButton = styled.button`
-  margin: 10px;
-`;
-
 function Workspace(props) {
   const [expanded, setExpanded] = React.useState(false);
   const [sortKey, setSortKey] = React.useState("default");
@@ -193,12 +190,17 @@ function Workspace(props) {
                   </RepositoryName>
                 </RepositoryInfo>
                 <RepositoryManagement>
+                  <IconButton
+                    onClick={() => {navigator.clipboard.writeText("git clone " + repository.url)}}
+                  >
+                    <ContentCopyIcon />
+                  </IconButton>
                   <AddRepository
                     editMode={true}
                     repository={repository}
                     workspace={props.workspace}
                   />
-                  <PullRequestsButton
+                  <IconButton
                     onClick={() => handleRepoExpand(repository.id)}
                   >
                     {selectedRepo === repository.id ? (
@@ -206,7 +208,7 @@ function Workspace(props) {
                     ) : (
                       <ArrowDropDownIcon />
                     )}
-                  </PullRequestsButton>
+                  </IconButton>
                 </RepositoryManagement>
               </Repository>
               {selectedRepo === repository.id && (
