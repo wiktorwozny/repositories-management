@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import AddWorkspace from "../components/workspace/AddWorkspace";
 import Workspace from "../components/workspace/Workspace";
+import LogoutButton from "../components/authentication/LogoutButton";
 
 const Wrapper = styled.div`
   display: flex;
@@ -45,6 +46,7 @@ function Dashboard() {
       <TopBar>
         <h1>Dashboard</h1>
         <AddWorkspace />
+        <LogoutButton />
       </TopBar>
 
       <WorkspaceList>
