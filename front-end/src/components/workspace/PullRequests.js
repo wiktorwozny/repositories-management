@@ -61,14 +61,26 @@ const PullRequestLink = styled.a`
 
 const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
   const Workspaces = useSelector((state) => state.workspace.workspaceList);
-  const reviews = useSelector((state) => state.workspace.reviews);
 
+  const ReviewsState = useSelector((state) => state.workspace.reviews);
   const thisPrs = Workspaces.find(
     (workspace) => workspace.id === workspaceId,
   ).repositories.find(
     (repository) => repository.id === repositoryId,
   ).pullRequests;
 
+  const reviewsObject = Workspaces.find(
+      (workspace) => workspace.id === workspaceId,
+  ).repositories.find(
+      (repository) => repository.id === repositoryId,
+  ).comments;
+
+
+  const reviews = reviewsObject.reduce((acc, obj) => {
+    acc[obj.prUrl] = obj.text;
+    return acc;
+  }, {});
+  console.log(reviews)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -89,7 +101,9 @@ const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
             <PullRequestInfo>
               <PullRequestLink href={pr.url}>{pr.title}</PullRequestLink>
               <PullRequestReview>
-                {reviews[pr.url] ? reviews[pr.url] : "No review yet"}
+                {reviews[pr.url] ? reviews[pr.url] : (
+                  ReviewsState[pr.url] ? ReviewsState[pr.url] : "No review yet"
+                )}
               </PullRequestReview>
               <PullRequestAuthor>
                 <AddReview

@@ -100,7 +100,7 @@ export const fetchPullRequests = createAsyncThunk(
       };
     }
 
-    console.log("queryObj", queryObj);
+   
     const { repositoryUrl, workspaceId, repositoryId } = queryObj;
     const response = await client.get("/pull-requests", {
       params: { repositoryUrl },
@@ -114,14 +114,17 @@ export const fetchPullRequests = createAsyncThunk(
 );
 
 export const addReview = createAsyncThunk(
-  "workspace/addReview",
-  async (review) => {
-    // const response = await client.post(
-    //     `/api/reviews`,
-    //     review,
-    // );
-    return review;
-  },
+    "workspace/addReview",
+    async ( {workspaceId,
+                review,
+                repositoryId,
+                pullRequestUrl}) => {
+        const endpoint = `/api/workspaces/${workspaceId}/repositories/${repositoryId}/review`;
+        let requestBody = pullRequestUrl + '&' + review;
+        const response = await client.post(endpoint, requestBody);
+        console.log("response", response);
+        return response.data;
+    },
 );
 
 const workspaceSlice = createSlice({
@@ -214,10 +217,9 @@ const workspaceSlice = createSlice({
     });
 
     builder.addCase(addReview.fulfilled, (state, action) => {
-      const { workspaceId, repositoryId, pullRequestUrl, review } =
-        action.payload;
-
-      state.reviews[pullRequestUrl] = review;
+        const { prUrl, text } = action.payload;
+        console.log(prUrl, text);
+        state.reviews[prUrl] = text;
     });
   },
 });

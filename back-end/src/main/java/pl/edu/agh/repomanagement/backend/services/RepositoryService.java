@@ -1,5 +1,6 @@
 package pl.edu.agh.repomanagement.backend.services;
 
+import pl.edu.agh.repomanagement.backend.models.Comment;
 import pl.edu.agh.repomanagement.backend.models.Repository;
 
 public interface RepositoryService {
@@ -10,4 +11,6 @@ public interface RepositoryService {
     boolean deleteRepositoryById(String id);
 
     Repository updateRepository(String id, Repository updatedRepository);
+
+    Comment addCommentToRepository(String id, String PRUrl, String commentText);
 }
