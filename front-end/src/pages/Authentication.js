@@ -52,7 +52,7 @@ function Authentication({ isSignedUp }) {
     return (
         <Wrapper>
             <TopBar>
-                <h1>Dashboard</h1>
+                <h1>RepoManager</h1>
                 <Controls>
                     <Button variant="outlined" onClick={handleSignedUp}>
                         Log in

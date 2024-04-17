@@ -103,10 +103,10 @@ class WorkspaceServiceTest {
         when(workspaceRepository.findById(id)).thenReturn(Optional.of(workspace));
 
         // When
-        boolean isDeleted = workspaceService.deleteWorkspaceById(id.toHexString());
+        Workspace deletedWorkspace = workspaceService.deleteWorkspaceById(id.toHexString());
 
         // Then
-        assertTrue(isDeleted);
+        assertEquals(workspace, deletedWorkspace);
         verify(workspaceRepository, times(1)).delete(workspace);
     }
 

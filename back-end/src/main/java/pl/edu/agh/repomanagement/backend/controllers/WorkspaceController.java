@@ -28,7 +28,7 @@ public class WorkspaceController {
 
     @GetMapping
     public ResponseEntity<List<Workspace>> getAllWorkspaces() {
-        List<Workspace> workspaces = workspaceService.getAllWorkspaces();
+        List<Workspace> workspaces = workspaceService.getUserWorkspaces();
         for(var workspace : workspaces) {
             if( workspace.getRepositories() == null) {
                 continue;
@@ -56,14 +56,14 @@ public class WorkspaceController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteWorkspace(@PathVariable("id") String id) {
-        workspaceService.deleteWorkspaceById(id);
+        workspaceService.deleteUserWorkspaceById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
     public ResponseEntity<Workspace> createWorkspace(@RequestBody String workspaceName) {
         Workspace workspace = new Workspace(workspaceName.replaceAll("\"", ""), new ArrayList<>());
-        Workspace createdWorkspace = workspaceService.saveWorkspace(workspace);
+        Workspace createdWorkspace = workspaceService.saveUserWorkspace(workspace);
         return new ResponseEntity<>(createdWorkspace, HttpStatus.CREATED);
     }
 
