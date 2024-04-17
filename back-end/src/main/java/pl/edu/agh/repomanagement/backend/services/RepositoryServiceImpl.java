@@ -101,7 +101,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                     System.out.println(ghPullRequest.getHtmlUrl().toString());
                     if (ghPullRequest.getHtmlUrl().toString().equals(comment.getPrUrl())) {
                         //without api key it doesn't work
-                        //ghPullRequest.comment(comment.getText());
+                        ghPullRequest.comment(comment.getText());
                         return comment;
                     }
                 }
