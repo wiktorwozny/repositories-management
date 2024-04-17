@@ -217,10 +217,9 @@ const workspaceSlice = createSlice({
     });
 
     builder.addCase(addReview.fulfilled, (state, action) => {
-      const { workspaceId, repositoryId, pullRequestUrl, review } =
-        action.payload;
-
-      state.reviews[pullRequestUrl] = review;
+        const { prUrl, text } = action.payload;
+        console.log(prUrl, text);
+        state.reviews[prUrl] = text;
     });
   },
 });

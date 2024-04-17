@@ -24,9 +24,11 @@ public class Repository {
     private LastCommit lastCommit;
 
     @DBRef
-    private List<Comment> comments = new ArrayList<>();;
+    private List<Comment> comments = new ArrayList<>();
 
-    public Repository() {}
+    public Repository() {
+    }
+
     public Repository(String name, String url) {
         this.name = name;
         this.url = url;
@@ -48,7 +50,9 @@ public class Repository {
         return lastCommit;
     }
 
-    public List<Comment> getComments(){return comments;}
+    public List<Comment> getComments() {
+        return comments;
+    }
 
     public void setLastCommit(LastCommit lastCommit) {
         this.lastCommit = lastCommit;
@@ -67,7 +71,9 @@ public class Repository {
         this.url = url;
     }
 
-    public void addComment(Comment comment){this.comments.add(comment);}
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
 
     @Override
     public boolean equals(Object o) {

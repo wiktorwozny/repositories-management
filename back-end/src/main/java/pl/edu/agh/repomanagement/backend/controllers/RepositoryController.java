@@ -62,7 +62,7 @@ public class RepositoryController {
     @GetMapping
     public ResponseEntity<List<Repository>> getAllRepositories(@PathVariable("wid") String wid) {
         Workspace workspace = workspaceService.getWorkspaceById(wid);
-        if(workspace == null) {
+        if (workspace == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         List<Repository> repositories = workspace.getRepositories();
@@ -74,7 +74,7 @@ public class RepositoryController {
                                                     @PathVariable("rid") String rid) {
 
         Repository repository = repositoryService.getRepositoryById(rid);
-        if(repository == null) {
+        if (repository == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -108,13 +108,13 @@ public class RepositoryController {
         // get workspace
         System.out.println("WID: " + wid);
         Workspace workspace = workspaceService.getWorkspaceById(wid);
-        if(workspace == null) {
+        if (workspace == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Repository repository = new Repository(dto.getName(), dto.getUrl());
         Repository newRepository = repositoryService.saveRepository(repository, wid);
-        if(workspace.getRepositories() == null) {
+        if (workspace.getRepositories() == null) {
             workspace.setRepositories(new ArrayList<>());
         }
         workspace.getRepositories().add(newRepository);
@@ -128,31 +128,32 @@ public class RepositoryController {
                                                        @RequestBody Repository updatedRepository) {
 
         Repository repository = repositoryService.updateRepository(rid, updatedRepository);
-        if( repository == null ) {
+        if (repository == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(repository, HttpStatus.OK);
     }
+
     @PostMapping("/{rid}/review")
-    public ResponseEntity<Repository> addComment(@PathVariable("wid") String wid,
-                                                 @PathVariable("rid") String rid,
-                                                 @RequestBody String requestBody) {
+    public ResponseEntity<Comment> addComment(@PathVariable("wid") String wid,
+                                              @PathVariable("rid") String rid,
+                                              @RequestBody String requestBody) {
         String[] requestBodyParts = requestBody.split("&");
 
-        if(requestBodyParts.length != 2) {
+        if (requestBodyParts.length != 2) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         String PRUrl = requestBodyParts[0].replace("\"", "");
-        String commentText = requestBodyParts[1];
+        String commentText = requestBodyParts[1].replace("\"", "");
 
 
-        Repository repository = repositoryService.addCommentToRepository(rid, PRUrl, commentText);
-        if( repository == null ) {
+        Comment comment = repositoryService.addCommentToRepository(rid, PRUrl, commentText);
+        if (comment == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(repository, HttpStatus.OK);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 }

@@ -129,8 +129,6 @@ class RepositoryControllerTest {
         workspace = workspaceService.saveWorkspace(workspace);
         ObjectId workspaceId = workspace.getId();
 
-        System.out.println("XDDD");
-
         Repository repository = new Repository("rtest", "https://github.com/xyz654/linter");
         repository = repositoryService.saveRepository(repository, workspaceId.toHexString());
         String repositoryId = repository.getId().toString();
@@ -139,7 +137,6 @@ class RepositoryControllerTest {
         String pullRequestUrl = "https://github.com/xyz654/linter/pull/12";
         String comment = "Test comment";
         String content = pullRequestUrl + "&" + comment;
-
 
         mockMvc.perform(post("/api/workspaces/{wid}/repositories/{rid}/review", workspaceId, repositoryId)
                         .contentType(MediaType.APPLICATION_JSON)

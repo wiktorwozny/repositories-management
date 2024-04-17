@@ -12,5 +12,5 @@ public interface RepositoryService {
 
     Repository updateRepository(String id, Repository updatedRepository);
 
-    Repository addCommentToRepository(String id,  String PRUrl, String commentText);
+    Comment addCommentToRepository(String id, String PRUrl, String commentText);
 }

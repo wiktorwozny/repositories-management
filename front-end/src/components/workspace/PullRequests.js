@@ -61,7 +61,6 @@ const PullRequestLink = styled.a`
 
 const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
   const Workspaces = useSelector((state) => state.workspace.workspaceList);
-  const reviews = useSelector((state) => state.workspace.reviews);
 
   const thisPrs = Workspaces.find(
     (workspace) => workspace.id === workspaceId,
@@ -69,6 +68,18 @@ const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
     (repository) => repository.id === repositoryId,
   ).pullRequests;
 
+  const reviewsObject = Workspaces.find(
+      (workspace) => workspace.id === workspaceId,
+  ).repositories.find(
+      (repository) => repository.id === repositoryId,
+  ).comments;
+
+
+  const reviews = reviewsObject.reduce((acc, obj) => {
+    acc[obj.prUrl] = obj.text;
+    return acc;
+  }, {});
+  console.log(reviews)
   const dispatch = useDispatch();
 
   useEffect(() => {

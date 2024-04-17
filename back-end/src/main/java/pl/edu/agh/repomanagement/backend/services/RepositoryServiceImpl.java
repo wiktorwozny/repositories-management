@@ -61,7 +61,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public boolean deleteRepositoryById(String id) {
         Optional<Repository> optRepository = repositoryRepository.findById(new ObjectId(id));
-        if(optRepository.isPresent()) {
+        if (optRepository.isPresent()) {
             repositoryRepository.delete(optRepository.get());
             return true;
         }
@@ -71,7 +71,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public Repository updateRepository(String id, Repository updatedWorkspace) {
         Optional<Repository> optRepository = repositoryRepository.findById(new ObjectId(id));
-        if(optRepository.isPresent()) {
+        if (optRepository.isPresent()) {
             Repository repository = optRepository.get();
             repository.setName(updatedWorkspace.getName());
             repository.setUrl(updatedWorkspace.getUrl());
@@ -81,34 +81,28 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public Repository addCommentToRepository(String id, String PRUrl, String commentText){
+    public Comment addCommentToRepository(String id, String PRUrl, String commentText) {
         Optional<Repository> optRepository = repositoryRepository.findById(new ObjectId(id));
-        System.out.println("test");
-        if(optRepository.isPresent()) {
-            System.out.println("test");
+        if (optRepository.isPresent()) {
             Repository repository = optRepository.get();
+            commentText.replace("\"", "");
             Comment comment = new Comment(PRUrl, commentText);
             commentRepository.save(comment);
             repository.addComment(comment);
             repositoryRepository.save(repository);
-            System.out.println("save comment");
             try {
-                String repoUrl=repository.getUrl();
-                System.out.println(comment.getPrUrl());
-                String[] splitUrl=repoUrl.split("/");
-                String userName=splitUrl[3];
-                String repoName=splitUrl[4];
-                System.out.println("split");
+                String repoUrl = repository.getUrl();
+                String[] splitUrl = repoUrl.split("/");
+                String userName = splitUrl[3];
+                String repoName = splitUrl[4];
                 org.kohsuke.github.GHRepository ghRepository = github.getRepository(userName + "/" + repoName);
                 List<GHPullRequest> ghPullRequests = ghRepository.queryPullRequests().list().toList();
-                System.out.println("GH");
                 for (GHPullRequest ghPullRequest : ghPullRequests) {
                     System.out.println(ghPullRequest.getHtmlUrl().toString());
-                    if(ghPullRequest.getHtmlUrl().toString().equals(comment.getPrUrl())){
-                        //without api key it doesnt work
-                        System.out.println("found");
-//                        ghPullRequest.comment(comment);
-                        return  repository;
+                    if (ghPullRequest.getHtmlUrl().toString().equals(comment.getPrUrl())) {
+                        //without api key it doesn't work
+                        //ghPullRequest.comment(comment.getText());
+                        return comment;
                     }
                 }
             } catch (IOException e) {
