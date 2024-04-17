@@ -62,6 +62,7 @@ const PullRequestLink = styled.a`
 const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
   const Workspaces = useSelector((state) => state.workspace.workspaceList);
 
+  const ReviewsState = useSelector((state) => state.workspace.reviews);
   const thisPrs = Workspaces.find(
     (workspace) => workspace.id === workspaceId,
   ).repositories.find(
@@ -100,7 +101,9 @@ const PullRequests = ({ repositoryUrl, workspaceId, repositoryId }) => {
             <PullRequestInfo>
               <PullRequestLink href={pr.url}>{pr.title}</PullRequestLink>
               <PullRequestReview>
-                {reviews[pr.url] ? reviews[pr.url] : "No review yet"}
+                {reviews[pr.url] ? reviews[pr.url] : (
+                  ReviewsState[pr.url] ? ReviewsState[pr.url] : "No review yet"
+                )}
               </PullRequestReview>
               <PullRequestAuthor>
                 <AddReview

@@ -100,7 +100,7 @@ export const fetchPullRequests = createAsyncThunk(
       };
     }
 
-    console.log("queryObj", queryObj);
+   
     const { repositoryUrl, workspaceId, repositoryId } = queryObj;
     const response = await client.get("/pull-requests", {
       params: { repositoryUrl },
